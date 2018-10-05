@@ -1,6 +1,6 @@
 # 🐙 Tako
 
-A GitHub application that helps maintian a large number of repositories in a GitHub organisation.
+A GitHub application that helps maintain a large number of repositories in a GitHub organisation.
 
 <img width="30%" align="left" src="https://user-images.githubusercontent.com/224547/46536555-c29d1180-c8a6-11e8-92c2-f3141da0d6da.png" />
 
