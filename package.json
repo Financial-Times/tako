@@ -16,10 +16,11 @@
     "build": "tsc -p tsconfig.json",
     "dev": "nodemon --exec \"npm start\"",
     "start": "probot run ./lib/index.js",
-    "lint": "tslint --project test --fix",
+    "lint": "tslint --project test",
     "tslint-check": "tslint-config-prettier-check ./tslint.json",
-    "test": "jest && tslint --project test",
-    "test:watch": "jest --watch --notify --notifyMode=change --coverage"
+    "test": "tsc --noEmit -p test && npm run unit-test && npm run lint",
+    "unit-test": "jest --coverage",
+    "unit-test:watch": "jest --watch --notify --notifyMode=change --coverage"
   },
   "dependencies": {
     "probot": "^7.2.0"
