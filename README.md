@@ -70,7 +70,7 @@ If you'd like to use `prettier` in your editor there are [plugins available for 
 
 There's an excellent explanation about how Prettier differs to a linter this [in the Prettier docs](https://prettier.io/docs/en/comparison.html).
 
-#### [`tslint`](https://www.npmjs.com/package/tslint)
+#### [TSLint](https://www.npmjs.com/package/tslint)
 
 > An extensible linter for the TypeScript language.
 
