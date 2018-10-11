@@ -48,7 +48,7 @@ const initEventHandlers = (app: Application, managedRepos: ManagedRepos) => {
 /**
  * @param {import('probot').Application} app - Probot's Application class.
  */
-const initApp = async (app: Application) => {
+export = async (app: Application) => {
 	assert(
 		process.env.TAKO_INSTALLATION_ID,
 		'tako requires the TAKO_INSTALLATION_ID environment variable to be set - see the README for help with configuration'
@@ -69,5 +69,3 @@ const initApp = async (app: Application) => {
 
 	app.log.info('tako is ready to receive requests');
 };
-
-export default initApp;
