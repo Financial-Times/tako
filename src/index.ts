@@ -1,5 +1,5 @@
 import assert from 'assert';
-import express from 'express';
+import { Request, Response } from 'express';
 import { Application, Context } from 'probot';
 
 import ManagedRepos from './lib/ManagedRepos.js';
@@ -9,21 +9,15 @@ const TAKO_INSTALLATION_ID: number = Number(process.env.TAKO_INSTALLATION_ID);
 const initApiRoutes = (app: Application, managedRepos: ManagedRepos) => {
 	const router = app.route('/tako');
 
-	router.get(
-		'/repos/managed',
-		async (req: express.Request, res: express.Response) => {
-			res.send(await managedRepos.getList());
-		}
-	);
+	router.get('/repos/managed', async (req: Request, res: Response) => {
+		res.send(await managedRepos.getList());
+	});
 
-	router.delete(
-		'/repos/managed',
-		async (req: express.Request, res: express.Response) => {
-			managedRepos.purgeList();
-			res.send([]);
-			app.log.info({ event: 'TAKO_MANAGED_REPOSITORIES_LIST_PURGED' });
-		}
-	);
+	router.delete('/repos/managed', async (req: Request, res: Response) => {
+		managedRepos.purgeList();
+		res.send([]);
+		app.log.info({ event: 'TAKO_MANAGED_REPOSITORIES_LIST_PURGED' });
+	});
 };
 
 const initEventHandlers = (app: Application, managedRepos: ManagedRepos) => {
