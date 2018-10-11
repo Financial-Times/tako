@@ -1,8 +1,8 @@
-import { Application } from "probot";
+import { Application } from 'probot';
 
 export = (app: Application) => {
 	// Your code here
-	app.log("Yay, the app was loaded!");
+	app.log('Yay, the app was loaded!');
 
 	// For more information on building apps:
 	// https://probot.github.io/docs/
