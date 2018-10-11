@@ -15,7 +15,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "nodemon --exec \"npm start\"",
-    "start": "probot run ./lib/index.js",
+    "start": "probot run ./dist/index.js",
     "lint": "tslint --project test",
     "tslint-check": "tslint-config-prettier-check ./tslint.json",
     "test": "tsc --noEmit -p test && npm run unit-test && npm run lint",
