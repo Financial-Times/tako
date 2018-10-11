@@ -1,7 +1,7 @@
 {
   "name": "tako",
   "version": "1.0.0",
-  "description": "A GitHub application that helps maintian a large number of repositories in a GitHub organisation.",
+  "description": "A GitHub application that helps maintain a large number of repositories in a GitHub organisation.",
   "author": "Braimbridge, Adam <adam@braimbridge.com> (https://github.com/adambraimbridge)",
   "license": "MIT",
   "repository": "https://github.com/financial-times-sandbox/tako.git",
@@ -16,9 +16,11 @@
     "build": "tsc -p tsconfig.json",
     "dev": "nodemon --exec \"npm start\"",
     "start": "probot run ./lib/index.js",
-    "lint": "standard **/*.ts --fix",
-    "test": "jest && standard **/*.ts",
-    "test:watch": "jest --watch --notify --notifyMode=change --coverage"
+    "lint": "tslint --project test",
+    "tslint-check": "tslint-config-prettier-check ./tslint.json",
+    "test": "tsc --noEmit -p test && npm run unit-test && npm run lint",
+    "unit-test": "jest --coverage",
+    "unit-test:watch": "jest --watch --notify --notifyMode=change --coverage"
   },
   "dependencies": {
     "probot": "^7.2.0"
@@ -26,25 +28,24 @@
   "devDependencies": {
     "@types/jest": "^23.3.4",
     "@types/node": "^10.11.5",
-    "eslint-plugin-typescript": "^0.12.0",
+    "husky": "^1.1.1",
     "jest": "^23.6.0",
     "nodemon": "^1.18.4",
+    "precise-commits": "^1.0.2",
+    "prettier": "1.14.3",
     "smee-client": "^1.0.2",
     "standard": "^12.0.1",
     "ts-jest": "^23.10.4",
-    "typescript": "^3.1.1",
-    "typescript-eslint-parser": "^20.0.0"
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.15.0",
+    "typescript": "^3.1.1"
   },
   "engines": {
     "node": ">= 8.12.0"
   },
-  "standard": {
-    "parser": "typescript-eslint-parser",
-    "env": [
-      "jest"
-    ],
-    "plugins": [
-      "typescript"
-    ]
+  "husky": {
+    "hooks": {
+      "pre-commit": "precise-commits && npm run lint"
+    }
   }
 }
