@@ -48,7 +48,7 @@
     "hooks": {
       "pre-commit": "secret-squirrel && precise-commits && npm run lint",
       "commitmsg": "secret-squirrel-commitmsg",
-      "prepush": "npm run test"
+      "pre-push": "npm run test"
     }
   }
 }
