@@ -23,7 +23,7 @@ const initApiRoutes = (app: Application, managedRepos: ManagedRepos) => {
 const initEventHandlers = (app: Application, managedRepos: ManagedRepos) => {
 	app.on(
 		['installation_repositories.added', 'installation_repositories.removed'],
-		(context: Context) => {
+		(context: Context): any => {
 			const action = context.payload.action;
 
 			app.log.debug({
@@ -33,8 +33,6 @@ const initEventHandlers = (app: Application, managedRepos: ManagedRepos) => {
 
 			managedRepos.purgeList();
 			app.log.info({ event: 'TAKO_MANAGED_REPOSITORIES_LIST_PURGED' });
-
-			return Promise.resolve();
 		}
 	);
 };
