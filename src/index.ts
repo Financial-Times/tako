@@ -50,7 +50,7 @@ const initEventHandlers = (app: Application, managedRepos: ManagedRepos) => {
  */
 export = async (app: Application) => {
 	assert(
-		process.env.TAKO_INSTALLATION_ID,
+		TAKO_INSTALLATION_ID,
 		'tako requires the TAKO_INSTALLATION_ID environment variable to be set - see the README for help with configuration'
 	);
 
