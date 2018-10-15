@@ -12,9 +12,6 @@ A GitHub application that helps maintain a large number of repositories in a Git
 # Install dependencies
 npm install
 
-# Run typescript
-npm run build
-
 # Run the app
 npm start
 ```
@@ -29,7 +26,7 @@ npm start
 nvm use
 
 # For handy debug log messages when running the app
-echo -e "\nLOG_LEVEL=debug" >> .env
+echo -e "\nLOG_LEVEL=trace" >> .env
 
 # Run the app with nodemon and restart on code changes
 npm run dev
@@ -70,17 +67,15 @@ If you'd like to use `prettier` in your editor there are [plugins available for 
 
 There's an excellent explanation about how Prettier differs to a linter this [in the Prettier docs](https://prettier.io/docs/en/comparison.html).
 
-#### [TSLint](https://www.npmjs.com/package/tslint)
+#### [ESLint](https://www.npmjs.com/package/eslint)
 
-> An extensible linter for the TypeScript language.
+> The pluggable linting utility for JavaScript and JSX
 
-The settings for `tslint` are defined in our [`tslint.json`](tslint.json) file.
-We use the [`tslint-config-prettier`](https://www.npmjs.com/package/tslint-config-prettier)
+The settings for `eslint` are defined in our [`.eslintrc.js`](.eslintrc.js) file.
+
+We use the [`eslint-config-prettier`](https://www.npmjs.com/package/eslint-config-prettier)
 preset to disable any rules that conflict with formatting that is handled by
-`prettier`. If you add new rules in [`tslint.json`](tslint.json) you can run
-`npm run tslint-check` to check for any conflicting rules.
+`prettier`. If you add new rules in [`.eslintrc.js`](.eslintrc.js) you can run
+`npm run eslint-check` to check for any conflicting rules.
 
-`tslint` is configured to run as part of the [git pre-commit hook](https://git-scm.com/docs/githooks#_pre_commit)
-in our [package.json](package.json).
-
-If you'd like to use `tslint` in your editor there are [plugins available for most popular editors](https://palantir.github.io/tslint/usage/third-party-tools/).
+If you'd like to use `eslint` in your editor there are [plugins available for most popular editors](https://eslint.org/docs/user-guide/integrations#editors/).
