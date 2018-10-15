@@ -15,7 +15,8 @@
   "scripts": {
     "dev": "nodemon --exec \"npm start\"",
     "start": "probot run ./src/index.js",
-    "lint": "echo \"No linter configured\"",
+    "lint": "eslint --fix src/ test/",
+    "eslint-check": "eslint --print-config . | eslint-config-prettier-check",
     "test": "npm run lint && npm run unit-test",
     "unit-test": "jest --coverage",
     "unit-test:watch": "jest --watch --notify --notifyMode=change --coverage"
@@ -24,6 +25,9 @@
     "probot": "^7.2.0"
   },
   "devDependencies": {
+    "eslint": "^5.7.0",
+    "eslint-config-prettier": "^3.1.0",
+    "eslint-plugin-no-only-tests": "^2.0.1",
     "husky": "^1.1.1",
     "jest": "^23.6.0",
     "nodemon": "^1.18.4",

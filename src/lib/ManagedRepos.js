@@ -3,7 +3,6 @@
  * from the GitHub API and caches that list in memory until it is explicitly purged.
  */
 module.exports = class ManagedRepos {
-
 	/**
 	 * @param {import('probot').Application} app - Probot's Application class.
 	 * @param installationId - A GitHub App installation ID.
@@ -54,5 +53,4 @@ module.exports = class ManagedRepos {
 		this.repositories = [];
 		this.fetched = false;
 	}
-
 };
