@@ -1,23 +1,16 @@
-import { Application } from 'probot';
-
 /**
  * Retrieves the list of GitHub repositories that a GitHub App is installed on
  * from the GitHub API and caches that list in memory until it is explicitly purged.
  */
-export default class ManagedRepos {
-
-	private app: Application;
-	private installationId: number;
-	private repositories: string[];
-	private fetched: boolean;
+module.exports = class ManagedRepos {
 
 	/**
-	 * @param app - A Probot application instance
-	 * @param installationId - A GitHub App installation ID
+	 * @param {import('probot').Application} app - Probot's Application class.
+	 * @param installationId - A GitHub App installation ID.
 	 */
-	constructor(app: Application, installationId: number) {
+	constructor(app, installationId) {
 		this.app = app;
-		this.installationId = installationId;
+		this.installationId = Number(installationId);
 		this.repositories = [];
 		this.fetched = false;
 	}
@@ -31,9 +24,9 @@ export default class ManagedRepos {
 	 *
 	 * https://octokit.github.io/rest.js/#api-Apps-getInstallationRepositories
 	 *
-	 * @returns Promise<string[]> - An array of GitHub repository names
+	 * @returns array - An array of GitHub repository names.
 	 */
-	public async getList(): Promise<string[]> {
+	async getList() {
 		let repositories = this.repositories;
 
 		if (this.fetched === false) {
@@ -42,7 +35,7 @@ export default class ManagedRepos {
 			const req = github.apps.getInstallationRepositories({ per_page: 100 });
 
 			repositories = await github.paginate(req, (res) => {
-				return res.data.repositories.map((repo: any) => repo.name);
+				return res.data.repositories.map((repo) => repo.name);
 			});
 
 			this.repositories = repositories;
@@ -57,7 +50,7 @@ export default class ManagedRepos {
 	 *
 	 * @returns void
 	 */
-	public purgeList() {
+	purgeList() {
 		this.repositories = [];
 		this.fetched = false;
 	}
