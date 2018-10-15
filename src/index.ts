@@ -6,6 +6,10 @@ import ManagedRepos from './lib/ManagedRepos.js';
 
 const TAKO_INSTALLATION_ID: number = Number(process.env.TAKO_INSTALLATION_ID);
 
+/**
+ * @param app - A Probot application instance
+ * @param managedRepos - A MangedRepos instance
+ */
 const initApiRoutes = (app: Application, managedRepos: ManagedRepos) => {
 	const router = app.route('/tako');
 
@@ -20,6 +24,10 @@ const initApiRoutes = (app: Application, managedRepos: ManagedRepos) => {
 	});
 };
 
+/**
+ * @param app - A Probot application instance
+ * @param managedRepos - A MangedRepos instance
+ */
 const initEventHandlers = (app: Application, managedRepos: ManagedRepos) => {
 	app.on(
 		['installation_repositories.added', 'installation_repositories.removed'],
