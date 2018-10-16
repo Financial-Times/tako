@@ -1,23 +1,21 @@
-import assert from 'assert';
-import { Request, Response } from 'express';
-import { Application, Context } from 'probot';
+const assert = require('assert');
 
-import ManagedRepos from './lib/ManagedRepos.js';
+const ManagedRepos = require('./lib/ManagedRepos');
 
-const TAKO_INSTALLATION_ID: number = Number(process.env.TAKO_INSTALLATION_ID);
+const TAKO_INSTALLATION_ID = Number(process.env.TAKO_INSTALLATION_ID);
 
 /**
- * @param app - A Probot application instance
- * @param managedRepos - A MangedRepos instance
+ * @param {import('probot').Application} app - Probot's Application class.
+ * @param managedRepos - An instance of the MangedRepos class.
  */
-const initApiRoutes = (app: Application, managedRepos: ManagedRepos) => {
+const initApiRoutes = (app, managedRepos) => {
 	const router = app.route('/tako');
 
-	router.get('/repos/managed', async (req: Request, res: Response) => {
+	router.get('/repos/managed', async (req, res) => {
 		res.send(await managedRepos.getList());
 	});
 
-	router.delete('/repos/managed', async (req: Request, res: Response) => {
+	router.delete('/repos/managed', async (req, res) => {
 		managedRepos.purgeList();
 		res.send([]);
 		app.log.info({ event: 'TAKO_MANAGED_REPOSITORIES_LIST_PURGED' });
@@ -25,13 +23,13 @@ const initApiRoutes = (app: Application, managedRepos: ManagedRepos) => {
 };
 
 /**
- * @param app - A Probot application instance
- * @param managedRepos - A MangedRepos instance
+ * @param {import('probot').Application} app - Probot's Application class.
+ * @param managedRepos - An instance of the MangedRepos class.
  */
-const initEventHandlers = (app: Application, managedRepos: ManagedRepos) => {
+const initEventHandlers = (app, managedRepos) => {
 	app.on(
 		['installation_repositories.added', 'installation_repositories.removed'],
-		(context: Context): any => {
+		(context) => {
 			const action = context.payload.action;
 
 			app.log.debug({
@@ -48,7 +46,7 @@ const initEventHandlers = (app: Application, managedRepos: ManagedRepos) => {
 /**
  * @param {import('probot').Application} app - Probot's Application class.
  */
-export = async (app: Application) => {
+module.exports = async (app) => {
 	assert(
 		TAKO_INSTALLATION_ID,
 		'tako requires the TAKO_INSTALLATION_ID environment variable to be set - see the README for help with configuration'
