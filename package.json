@@ -25,6 +25,7 @@
     "probot": "^7.2.0"
   },
   "devDependencies": {
+    "@financial-times/secret-squirrel": "^2.10.3",
     "eslint": "^5.7.0",
     "eslint-config-prettier": "^3.1.0",
     "eslint-plugin-no-only-tests": "^2.0.1",
@@ -49,7 +50,9 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint"
+      "pre-commit": "secret-squirrel && npm run lint",
+      "commit-msg": "secret-squirrel-commitmsg",
+      "pre-push": "npm run unit-test"
     }
   }
 }
