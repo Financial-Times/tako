@@ -1,32 +1,35 @@
 const assert = require('assert');
 
-const ManagedRepos = require('./lib/ManagedRepos');
+const ManagedRepositories = require('./lib/ManagedRepositories');
 
 const TAKO_INSTALLATION_ID = Number(process.env.TAKO_INSTALLATION_ID);
 
 /**
  * @param {import('probot').Application} app - Probot's Application class.
- * @param managedRepos - An instance of the MangedRepos class.
+ * @param managedRepositories - An instance of the MangedRepositories class.
  */
-const initApiRoutes = (app, managedRepos) => {
+const initApiRoutes = (app, managedRepositories) => {
 	const router = app.route('/tako');
 
-	router.get('/repos/managed', async (req, res) => {
-		res.send(await managedRepos.getList());
+	router.get('/repositories', async (req, res) => {
+		res.send(await managedRepositories.getList());
 	});
 
-	router.delete('/repos/managed', async (req, res) => {
-		managedRepos.purgeList();
-		res.send([]);
+	router.delete('/repositories', async (req, res) => {
+		managedRepositories.purgeList();
+
+		// Success, but no content for you!
+		res.sendStatus(204);
+
 		app.log.info({ event: 'TAKO_MANAGED_REPOSITORIES_LIST_PURGED' });
 	});
 };
 
 /**
  * @param {import('probot').Application} app - Probot's Application class.
- * @param managedRepos - An instance of the MangedRepos class.
+ * @param managedRepositories - An instance of the MangedRepos class.
  */
-const initEventHandlers = (app, managedRepos) => {
+const initEventHandlers = (app, managedRepositories) => {
 	app.on(
 		['installation_repositories.added', 'installation_repositories.removed'],
 		(context) => {
@@ -37,7 +40,7 @@ const initEventHandlers = (app, managedRepos) => {
 				repositories: context.payload[`repositories_${action}`]
 			});
 
-			managedRepos.purgeList();
+			managedRepositories.purgeList();
 			app.log.info({ event: 'TAKO_MANAGED_REPOSITORIES_LIST_PURGED' });
 		}
 	);
@@ -55,15 +58,15 @@ module.exports = async (app) => {
 	// NOTE: Retrieving the repoList in this way, outside of the context of
 	// a webhook event payload, makes the assumption that this GitHub app is
 	// only installed on one GitHub organisation e.g. financial-times-sandbox
-	const managedRepos = new ManagedRepos(app, TAKO_INSTALLATION_ID);
+	const managedRepositories = new ManagedRepositories(app, TAKO_INSTALLATION_ID);
 
 	app.log.debug(
 		'tako is managing these repositories',
-		await managedRepos.getList()
+		await managedRepositories.getList()
 	);
 
-	initApiRoutes(app, managedRepos);
-	initEventHandlers(app, managedRepos);
+	initApiRoutes(app, managedRepositories);
+	initEventHandlers(app, managedRepositories);
 
 	app.log.info('tako is ready to receive requests');
 };

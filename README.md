@@ -1,6 +1,6 @@
 # 🐙 Tako
 
-A GitHub application that helps maintain a large number of repositories in a GitHub organisation.
+A GitHub App that helps maintain a large number of repositories in a GitHub organisation.
 
 <img width="30%" align="left" src="https://user-images.githubusercontent.com/224547/46536555-c29d1180-c8a6-11e8-92c2-f3141da0d6da.png" />
 
@@ -79,3 +79,36 @@ preset to disable any rules that conflict with formatting that is handled by
 `npm run eslint-check` to check for any conflicting rules.
 
 If you'd like to use `eslint` in your editor there are [plugins available for most popular editors](https://eslint.org/docs/user-guide/integrations#editors/).
+
+## Schema
+
+`GET /tako/repositories`
+
+```json
+[
+    {
+        "name": "next-foo-bar",
+        "topics": [ "next-app" ]
+    }
+]
+```
+
+`GET /tako/repositories?topics=next-app`
+
+```json
+[
+    {
+        "name": "next-foo-bar",
+        "topics": [ "next-app" ]
+    }
+]
+```
+
+## To-do
+
+- [ ] Define the commands needed to run to get started from scratch
+- [ ] Document what the `TAKO_INSTALLATION_ID` is (limit the App to one Org), and how to get it, review how we do this
+  * Use setup redirect URL?
+  * Look at an event, or lookup in the API, pull out the ID somehow?
+- [ ] Document the API
+  * How should we?! In the `README.md`
