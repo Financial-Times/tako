@@ -11,11 +11,24 @@ const TAKO_INSTALLATION_ID = Number(process.env.TAKO_INSTALLATION_ID);
 const initApiRoutes = (app, managedRepositories) => {
 	const router = app.route('/tako');
 
+	router.get('/__gtg', (req, res) => {
+		res.send({ ok: true });
+	});
+
+	router.get('/__health', (req, res) => {
+		res.send({
+			schemaVersion: 1,
+			systemCode: 'tako',
+			name: 'Tako',
+			checks: []
+		});
+	});
+
 	router.get('/repositories', async (req, res) => {
 		res.send(await managedRepositories.getList());
 	});
 
-	router.delete('/repositories', async (req, res) => {
+	router.delete('/repositories', (req, res) => {
 		managedRepositories.purgeList();
 
 		// Success, but no content for you!
