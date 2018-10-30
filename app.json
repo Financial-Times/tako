@@ -1,0 +1,30 @@
+{
+  "name": "Tako",
+  "env": {
+    "APP_ID": {
+      "description": "The GitHub App ID, find this at https://github.com/settings/apps."
+    },
+    "PRIVATE_KEY": {
+      "description": "See https://developer.github.com/apps/building-github-apps/authenticating-with-github-apps/#generating-a-private-key."
+    },
+    "WEBHOOK_SECRET": {
+      "description": "A secret key for verifying the integrity of webhook requests. The value of this should also be set in the GitHub App at https://github.com/settings/apps.",
+      "generator": "secret"
+    },
+    "LOG_LEVEL": {
+      "description": "The log level.",
+      "value": "trace"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "Standard-1X"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
