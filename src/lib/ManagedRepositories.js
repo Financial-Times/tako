@@ -2,7 +2,7 @@
  * Retrieves the list of GitHub repositories that a GitHub App is installed on
  * from the GitHub API and caches that list in memory until it is explicitly purged.
  */
-module.exports = class ManagedRepos {
+module.exports = class ManagedRepositories {
 	/**
 	 * @param {import('probot').Application} app - Probot's Application class.
 	 * @param installationId - A GitHub App installation ID.
