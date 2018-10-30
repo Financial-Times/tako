@@ -1,5 +1,6 @@
 {
   "name": "Tako",
+  "logo": "https://assets-cdn.github.com/images/icons/emoji/unicode/1f419.png",
   "env": {
     "APP_ID": {
       "description": "The GitHub App ID, find this at https://github.com/settings/apps."
