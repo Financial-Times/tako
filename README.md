@@ -31,9 +31,9 @@ npm run dev
 
 4. Install the app in your personal GitHub account, then pick an example repository or two in the drop down
 
-5. Probot will then automatically create you a `.env` file (you can add `LOG_LEVEL=trace` for more verbose logging)
+5. Probot will then automatically create you a `.env` file in your local working directory (you can add `LOG_LEVEL=trace` for more verbose logging)
 
-6. From your browser, copy the installiation ID from the URL (e.g. at `https://github.com/settings/installations/123456` `123456` is the ID)
+6. From your browser, copy the installiation ID from the URL (e.g. at `https://github.com/settings/installations/123456` the ID is `123456`)
 
 7. Add `TAKO_INSTALLATION_ID` to your `.env` file, setting it's value to the ID you've just copied
 
