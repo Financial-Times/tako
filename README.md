@@ -4,43 +4,73 @@ A GitHub App that helps maintain a large number of repositories in a GitHub orga
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-<img width="30%" align="left" src="https://user-images.githubusercontent.com/224547/46536555-c29d1180-c8a6-11e8-92c2-f3141da0d6da.png" />
+<img width="10%" align="left" src="https://user-images.githubusercontent.com/224547/46536555-c29d1180-c8a6-11e8-92c2-f3141da0d6da.png" />
 
-<img width="50%" align="" src="https://user-images.githubusercontent.com/224547/46534085-e65c5980-c89e-11e8-90b7-06e060217de1.png" />
+<img width="30%" align="" src="https://user-images.githubusercontent.com/224547/46534085-e65c5980-c89e-11e8-90b7-06e060217de1.png" />
 
-## Setup
+## The API Schema
 
-```sh
-# Install dependencies
-npm install
+`GET /tako/repositories`
 
-# Run the app
-npm start
+```json
+[
+    {
+        "name": "next-foo-bar",
+        "topics": [ "next-app" ]
+    },
+    {
+        "name": "next-fizz-buzz",
+        "topics": [ "next-serverless" ]
+    }
+]
+```
+
+`GET /tako/repositories?topic=next-app`
+
+```json
+[
+    {
+        "name": "next-foo-bar",
+        "topics": [ "next-app" ]
+    }
+]
 ```
 
 ## Development
 
-### Running things in development
+### Getting Started
+
+1. Build the application
 
 ```sh
-# If you use nvm, set the version of node to use (defined in our .nvmrc)
-# https://github.com/creationix/nvm#nvmrc
+# If you use nvm, install the correct version of Node.js (defined in .nvmrc)
 nvm use
 
-# For handy debug log messages when running the app
-echo -e "\nLOG_LEVEL=trace" >> .env
+# Install any dependencies
+npm install
 
-# Run the app with nodemon and restart on code changes
+# Start the application locally (restarting on changes to the code)
 npm run dev
-
-# Run unit tests on code changes
-npm run unit-test:watch
 ```
+
+2. Go to <http://localhost:3000/probot> in a browser, and click on "Register GitHub App"
+
+3. Rename the app to something that isn't already registered, e.g. "Sam's Development Tako"
+
+4. Install the app in your personal GitHub account, then pick an example repository or two in the drop down
+
+5. Probot will then automatically create you a `.env` file in your local working directory (you can add `LOG_LEVEL=trace` for more verbose logging)
+
+6. From your browser, copy the installiation ID from the URL (e.g. at `https://github.com/settings/installations/123456` the ID is `123456`)
+
+7. Add `TAKO_INSTALLATION_ID` to your `.env` file, setting it's value to the ID you've just copied
+
+You're now good to go 🎉.
 
 ### Formatting and Code Quality
 
 This project uses a few tools to help us with consistent formatting and code
-quality:
+quality.
 
 #### [EditorConfig](https://editorconfig.org/)
 
@@ -81,36 +111,3 @@ preset to disable any rules that conflict with formatting that is handled by
 `npm run eslint-check` to check for any conflicting rules.
 
 If you'd like to use `eslint` in your editor there are [plugins available for most popular editors](https://eslint.org/docs/user-guide/integrations#editors/).
-
-## Schema
-
-`GET /tako/repositories`
-
-```json
-[
-    {
-        "name": "next-foo-bar",
-        "topics": [ "next-app" ]
-    }
-]
-```
-
-`GET /tako/repositories?topics=next-app`
-
-```json
-[
-    {
-        "name": "next-foo-bar",
-        "topics": [ "next-app" ]
-    }
-]
-```
-
-## To-do
-
-- [ ] Define the commands needed to run to get started from scratch
-- [ ] Document what the `TAKO_INSTALLATION_ID` is (limit the App to one Org), and how to get it, review how we do this
-  * Use setup redirect URL?
-  * Look at an event, or lookup in the API, pull out the ID somehow?
-- [ ] Document the API
-  * How should we?! In the `README.md`
