@@ -8,6 +8,34 @@ A GitHub App that helps maintain a large number of repositories in a GitHub orga
 
 <img width="30%" align="" src="https://user-images.githubusercontent.com/224547/46534085-e65c5980-c89e-11e8-90b7-06e060217de1.png" />
 
+## The API Schema
+
+`GET /tako/repositories`
+
+```json
+[
+    {
+        "name": "next-foo-bar",
+        "topics": [ "next-app" ]
+    },
+    {
+        "name": "next-fizz-buzz",
+        "topics": [ "next-serverless" ]
+    }
+]
+```
+
+`GET /tako/repositories?topic=next-app`
+
+```json
+[
+    {
+        "name": "next-foo-bar",
+        "topics": [ "next-app" ]
+    }
+]
+```
+
 ## Development
 
 ### Getting Started
@@ -15,7 +43,7 @@ A GitHub App that helps maintain a large number of repositories in a GitHub orga
 1. Build the application
 
 ```sh
-# Install the correct version of Node.js (defined in .nvmrc)
+# If you use nvm, install the correct version of Node.js (defined in .nvmrc)
 nvm use
 
 # Install any dependencies
@@ -83,27 +111,3 @@ preset to disable any rules that conflict with formatting that is handled by
 `npm run eslint-check` to check for any conflicting rules.
 
 If you'd like to use `eslint` in your editor there are [plugins available for most popular editors](https://eslint.org/docs/user-guide/integrations#editors/).
-
-## The API Schema
-
-`GET /tako/repositories`
-
-```json
-[
-    {
-        "name": "next-foo-bar",
-        "topics": [ "next-app" ]
-    }
-]
-```
-
-`GET /tako/repositories?topics=next-app`
-
-```json
-[
-    {
-        "name": "next-foo-bar",
-        "topics": [ "next-app" ]
-    }
-]
-```
