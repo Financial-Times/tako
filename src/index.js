@@ -1,72 +1,106 @@
-const assert = require('assert');
-
-const ManagedRepositories = require('./lib/ManagedRepositories');
-
-const TAKO_INSTALLATION_ID = Number(process.env.TAKO_INSTALLATION_ID);
-
-/**
- * @param {import('probot').Application} app - Probot's Application class.
- * @param managedRepositories - An instance of the MangedRepositories class.
- */
-const initApiRoutes = (app, managedRepositories) => {
-	const router = app.route('/tako');
-
-	router.get('/repositories', async (req, res) => {
-		res.send(await managedRepositories.getList());
-	});
-
-	router.delete('/repositories', async (req, res) => {
-		managedRepositories.purgeList();
-
-		// Success, but no content for you!
-		res.sendStatus(204);
-
-		app.log.info({ event: 'TAKO_MANAGED_REPOSITORIES_LIST_PURGED' });
-	});
-};
-
-/**
- * @param {import('probot').Application} app - Probot's Application class.
- * @param managedRepositories - An instance of the MangedRepos class.
- */
-const initEventHandlers = (app, managedRepositories) => {
-	app.on(
-		['installation_repositories.added', 'installation_repositories.removed'],
-		(context) => {
-			const action = context.payload.action;
-
-			app.log.debug({
-				event: `TAKO_GITHUB_INSTALLATION_REPOSITORIES_${action.toUpperCase()}`,
-				repositories: context.payload[`repositories_${action}`]
-			});
-
-			managedRepositories.purgeList();
-			app.log.info({ event: 'TAKO_MANAGED_REPOSITORIES_LIST_PURGED' });
-		}
-	);
-};
+const assert = require('assert').strict;
+const routes = require('./routes');
 
 /**
  * @param {import('probot').Application} app - Probot's Application class.
  */
 module.exports = async (app) => {
+	// Create a scoped logger to track the initialisation.
+	const logger = app.log.child({ name: 'init' });
+
+	/**
+	 * Get a GitHub App authenticated GitHub API client.
+	 *
+	 * This uses a private method on app, as we don't have an authenticated event context here.
+	 *
+	 * @see https://probot.github.io/api/latest/classes/application.html#auth
+	 * @see https://developer.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app
+	 *
+	 * @type {import('probot').GitHubAPI}
+	 */
+	const octokit = await app
+		.auth()
+		.catch((err) =>
+			logger.fatal('Failed to authenticate as a GitHub App', err)
+		);
+
+	logger.debug(`Authenticated as a GitHub App`);
+
+	/**
+	 * Get every installation of the GitHub App. There should only be the one.
+	 *
+	 * Tako should be a private (also know as internal) GitHub App installed on the same account it is administered by.
+	 *
+	 * @see https://developer.github.com/apps/managing-github-apps/making-a-github-app-public-or-private/#private-installation-flow
+	 */
+	const installations = await octokit.apps
+		.getInstallations()
+		.catch((err) => logger.fatal("Failed to get the App's installations", err));
+
 	assert(
-		TAKO_INSTALLATION_ID,
-		'tako requires the TAKO_INSTALLATION_ID environment variable to be set - see the README for help with configuration'
+		Array.isArray(installations.data) && installations.data.length === 1,
+		'Tako should be an internal GitHub App, to configure this see https://developer.github.com/apps/managing-github-apps/making-a-github-app-public-or-private/#private-installation-flow.'
 	);
 
-	// NOTE: Retrieving the repoList in this way, outside of the context of
-	// a webhook event payload, makes the assumption that this GitHub app is
-	// only installed on one GitHub organisation e.g. financial-times-sandbox
-	const managedRepositories = new ManagedRepositories(app, TAKO_INSTALLATION_ID);
-
-	app.log.debug(
-		'tako is managing these repositories',
-		await managedRepositories.getList()
+	logger.debug(
+		`Fetched the App's installations`,
+		installations.data.map((i) => i.id)
 	);
 
-	initApiRoutes(app, managedRepositories);
-	initEventHandlers(app, managedRepositories);
+	const installationId = installations.data[0].id;
 
-	app.log.info('tako is ready to receive requests');
+	/**
+	 * Get an installation authenticated GitHub API client, by passing `app.auth` the installation id.
+	 *
+	 * This uses a private method on app, as we don't have an authenticated event context here.
+	 *
+	 * @see https://developer.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-an-installation
+	 *
+	 * @type {import('probot').GitHubAPI}
+	 */
+	const installation = await app
+		.auth(installationId)
+		.catch((err) =>
+			logger.fatal(
+				`Failed to authenticate as installation ${installationId}`,
+				err
+			)
+		);
+
+	logger.debug(`Authenticated as installation ${installationId}`);
+
+	/**
+	 * Create a store for our repositories.
+	 *
+	 * @type {Map}
+	 */
+	const repositoryStore = new Map();
+
+	// Add our repository store to the context property of all events.
+	app.on('*', (context) => (context.local.repositoryStore = repositoryStore));
+
+	logger.debug(`Created the repository store`);
+
+	(await installation.paginate(
+		installation.apps.getInstallationRepositories(),
+		(res) => res.data.repositories
+	)).forEach((repository) => repositoryStore.set(repository.id, repository));
+
+	logger.info(`Loaded ${repositoryStore.size} repositories`);
+
+	// Add the API routes.
+	routes(app);
+
+	app.on('installation_repositories.added', async () => {
+		// TODO: Actually add new repositories to the store.
+	});
+
+	app.on(
+		'installation_repositories.removed',
+		({ local: { repositoryStore }, payload: { repositories_removed } }) => {
+			repositories_removed.forEach((repository) =>
+				repositoryStore.delete(repository.id)
+			);
+		}
+	);
 };
