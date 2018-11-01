@@ -1,6 +1,6 @@
 # 🐙 Tako
 
-A GitHub App that helps maintain a large number of repositories in a GitHub organisation.
+A GitHub App that helps to identify and group a large number of repositories in a GitHub organisation.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
