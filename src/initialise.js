@@ -70,8 +70,8 @@ module.exports = async (app) => {
 	 */
 	const repositoryStore = new Map();
 
-	// Add our repository store to the context property of all events.
-	app.on('*', (context) => (context.local.repositoryStore = repositoryStore));
+	// Add our repository store to the app.
+	app.repositoryStore = repositoryStore;
 
 	logger.debug(`Created the repository store`);
 

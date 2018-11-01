@@ -21,16 +21,23 @@ module.exports = async (app) => {
 		process.exit(1);
 	}
 
-	app.on('installation_repositories.added', async () => {
-		// TODO: Actually add new repositories to the store.
-	});
+	app.on(
+		'installation_repositories.added',
+		async ({ log, payload: { repositories_added } }) => {
+			repositories_added.forEach((repository) => {
+				app.repositoryStore.set(repository.id, repository);
+				log.info(`Added repository ${repository.full_name}`);
+			});
+		}
+	);
 
 	app.on(
 		'installation_repositories.removed',
-		({ local: { repositoryStore }, payload: { repositories_removed } }) => {
-			repositories_removed.forEach((repository) =>
-				repositoryStore.delete(repository.id)
-			);
+		async ({ log, payload: { repositories_removed } }) => {
+			repositories_removed.forEach((repository) => {
+				app.repositoryStore.delete(repository.id);
+				log.info(`Removed repository ${repository.full_name}`);
+			});
 		}
 	);
 };

@@ -42,10 +42,24 @@
     "repository_selection": "selected",
     "repositories_added": [
       {
-        "id": 155240278,
-        "node_id": "MDEwOlJlcG9zaXRvcnkxNTUyNDAyNzg=",
-        "name": "next-getting-started",
-        "full_name": "financial-times-sandbox/next-getting-started",
+        "id": 151578026,
+        "node_id": "MDEwOlJlcG9zaXRvcnkxNTE1NzgwMjY=",
+        "name": "Cheerful-Crossbow",
+        "full_name": "financial-times-sandbox/Cheerful-Crossbow",
+        "private": false
+      },
+      {
+        "id": 151578147,
+        "node_id": "MDEwOlJlcG9zaXRvcnkxNTE1NzgxNDc=",
+        "name": "Northernmost-Crossbow",
+        "full_name": "financial-times-sandbox/Northernmost-Crossbow",
+        "private": false
+      },
+      {
+        "id": 151578167,
+        "node_id": "MDEwOlJlcG9zaXRvcnkxNTE1NzgxNjc=",
+        "name": "Stormy-Aimless-Monkey",
+        "full_name": "financial-times-sandbox/Stormy-Aimless-Monkey",
         "private": false
       }
     ],

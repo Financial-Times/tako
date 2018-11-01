@@ -1,5 +1,5 @@
 {
-  "event": "integration_installation_repositories",
+  "event": "installation_repositories",
   "payload": {
     "action": "added",
     "installation": {
@@ -42,10 +42,24 @@
     "repository_selection": "all",
     "repositories_added": [
       {
-        "id": 155604143,
-        "node_id": "MDEwOlJlcG9zaXRvcnkxNTU2MDQxNDM=",
-        "name": "test",
-        "full_name": "financial-times-sandbox/test",
+        "id": 151578026,
+        "node_id": "MDEwOlJlcG9zaXRvcnkxNTE1NzgwMjY=",
+        "name": "Cheerful-Crossbow",
+        "full_name": "financial-times-sandbox/Cheerful-Crossbow",
+        "private": false
+      },
+      {
+        "id": 151578147,
+        "node_id": "MDEwOlJlcG9zaXRvcnkxNTE1NzgxNDc=",
+        "name": "Northernmost-Crossbow",
+        "full_name": "financial-times-sandbox/Northernmost-Crossbow",
+        "private": false
+      },
+      {
+        "id": 151578167,
+        "node_id": "MDEwOlJlcG9zaXRvcnkxNTE1NzgxNjc=",
+        "name": "Stormy-Aimless-Monkey",
+        "full_name": "financial-times-sandbox/Stormy-Aimless-Monkey",
         "private": false
       }
     ],

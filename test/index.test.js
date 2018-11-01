@@ -1,15 +1,12 @@
 const { Application } = require('probot');
 
-const initalise = require('../src/initialise');
-const routes = require('../src/routes');
-
 // Requiring our app implementation.
-const subject = require('../src');
+const subject = require('../src/index');
 
 // Helper for transforming events copied from Smee.
 const fixture = (fixture) => {
 	const { event, payload } = require(`./fixtures/${fixture}.json`);
-	return { name: event, payload };
+	return { name: `${event}.${payload.action}`, payload };
 };
 
 // We must mock the require calls that `index.js` makes here, not under `describe`.
@@ -17,13 +14,10 @@ const fixture = (fixture) => {
 jest.mock('../src/initialise');
 jest.mock('../src/routes');
 
-// Both modules return a Promise that resolves to a void return value.
-initalise.mockImplementation(() => Promise.resolve());
-routes.mockImplementation(() => Promise.resolve());
-
 describe('Tako', () => {
 	let app;
 	let github;
+	let repositoryStore;
 
 	beforeEach(() => {
 		app = new Application();
@@ -36,22 +30,38 @@ describe('Tako', () => {
 			//
 		};
 
+		repositoryStore = new Map();
+
+		// Add a repository store that we can interrogate.
+		app.repositoryStore = repositoryStore;
+
 		// Passes the mocked out GitHub API into out app instance.
 		app.auth = () => Promise.resolve(github);
 	});
 
 	test('installation_repositories.added_all', async () => {
 		await app.receive(fixture('installation_repositories.added_all'));
-		expect(true).toEqual(true);
+
+		expect(repositoryStore.size).toEqual(3);
 	});
 
 	test('installation_repositories.added_selected', async () => {
 		await app.receive(fixture('installation_repositories.added_selected'));
-		expect(true).toEqual(true);
+
+		expect(repositoryStore.size).toEqual(3);
 	});
 
 	test('installation_repositories.removed', async () => {
-		await app.receive(fixture('installation_repositories.removed'));
-		expect(true).toEqual(true);
+		const event = fixture('installation_repositories.removed');
+
+		event.payload.repositories_removed.forEach((repository) => {
+			repositoryStore.set(repository.id, repository);
+		});
+
+		expect(repositoryStore.size).toEqual(3);
+
+		await app.receive(event);
+
+		expect(repositoryStore.size).toEqual(0);
 	});
 });
