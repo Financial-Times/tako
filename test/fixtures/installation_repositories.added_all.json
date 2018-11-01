@@ -1,0 +1,74 @@
+{
+  "event": "integration_installation_repositories",
+  "payload": {
+    "action": "added",
+    "installation": {
+      "id": 420551,
+      "account": {
+        "login": "financial-times-sandbox",
+        "id": 43821550,
+        "node_id": "MDEyOk9yZ2FuaXphdGlvbjQzODIxNTUw",
+        "avatar_url": "https://avatars2.githubusercontent.com/u/43821550?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/financial-times-sandbox",
+        "html_url": "https://github.com/financial-times-sandbox",
+        "followers_url": "https://api.github.com/users/financial-times-sandbox/followers",
+        "following_url": "https://api.github.com/users/financial-times-sandbox/following{/other_user}",
+        "gists_url": "https://api.github.com/users/financial-times-sandbox/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/financial-times-sandbox/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/financial-times-sandbox/subscriptions",
+        "organizations_url": "https://api.github.com/users/financial-times-sandbox/orgs",
+        "repos_url": "https://api.github.com/users/financial-times-sandbox/repos",
+        "events_url": "https://api.github.com/users/financial-times-sandbox/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/financial-times-sandbox/received_events",
+        "type": "Organization",
+        "site_admin": false
+      },
+      "repository_selection": "all",
+      "access_tokens_url": "https://api.github.com/installations/420551/access_tokens",
+      "repositories_url": "https://api.github.com/installation/repositories",
+      "html_url": "https://github.com/organizations/financial-times-sandbox/settings/installations/420551",
+      "app_id": 19832,
+      "target_id": 43821550,
+      "target_type": "Organization",
+      "permissions": {
+        "issues": "write"
+      },
+      "events": ["issues"],
+      "created_at": 1540825953,
+      "updated_at": 1541009724,
+      "single_file_name": null
+    },
+    "repository_selection": "all",
+    "repositories_added": [
+      {
+        "id": 155604143,
+        "node_id": "MDEwOlJlcG9zaXRvcnkxNTU2MDQxNDM=",
+        "name": "test",
+        "full_name": "financial-times-sandbox/test",
+        "private": false
+      }
+    ],
+    "repositories_removed": [],
+    "sender": {
+      "login": "sjparkinson",
+      "id": 51677,
+      "node_id": "MDQ6VXNlcjUxNjc3",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/51677?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/sjparkinson",
+      "html_url": "https://github.com/sjparkinson",
+      "followers_url": "https://api.github.com/users/sjparkinson/followers",
+      "following_url": "https://api.github.com/users/sjparkinson/following{/other_user}",
+      "gists_url": "https://api.github.com/users/sjparkinson/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/sjparkinson/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/sjparkinson/subscriptions",
+      "organizations_url": "https://api.github.com/users/sjparkinson/orgs",
+      "repos_url": "https://api.github.com/users/sjparkinson/repos",
+      "events_url": "https://api.github.com/users/sjparkinson/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/sjparkinson/received_events",
+      "type": "User",
+      "site_admin": false
+    }
+  }
+}
