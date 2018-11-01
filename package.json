@@ -1,7 +1,7 @@
 {
   "name": "tako",
   "version": "1.0.0",
-  "description": "A GitHub application that helps maintain a large number of repositories in a GitHub organisation.",
+  "description": "Surface your team's repositories as an API via a GitHub App.",
   "author": "Braimbridge, Adam <adam@braimbridge.com> (https://github.com/adambraimbridge)",
   "license": "MIT",
   "repository": "https://github.com/financial-times-sandbox/tako.git",
