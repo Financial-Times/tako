@@ -10,6 +10,17 @@ jobs:
     steps:
       - checkout
 
-      - run: npm install
+      - restore_cache:
+         keys:
+           - npm-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+           - npm-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+           - npm- # used if checksum fails
+
+      - run: npm ci
+
+      - save_cache:
+          key: npm-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules/
 
       - run: npm test
