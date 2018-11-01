@@ -16,7 +16,7 @@ jobs:
            - npm-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
            - npm- # used if checksum fails
 
-      - run: npm ci
+      - run: npm install
 
       - save_cache:
           key: npm-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
@@ -24,3 +24,9 @@ jobs:
             - node_modules/
 
       - run: npm test
+
+      - store_test_results:
+          path: test-results/jest/
+
+      - store_artifacts:
+          path: test-results/

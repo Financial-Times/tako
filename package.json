@@ -18,8 +18,8 @@
     "lint": "eslint --fix src/ test/",
     "eslint-check": "eslint --print-config . | eslint-config-prettier-check",
     "test": "npm run lint && npm run unit-test",
-    "unit-test": "jest --coverage",
-    "unit-test:watch": "jest --watch --notify --notifyMode=change --coverage"
+    "unit-test": "jest",
+    "unit-test:watch": "jest --watch --notify --notifyMode=change"
   },
   "dependencies": {
     "probot": "^7.2.0"
@@ -30,6 +30,7 @@
     "eslint-plugin-no-only-tests": "^2.0.1",
     "husky": "^1.1.1",
     "jest": "^23.6.0",
+    "jest-junit": "^5.2.0",
     "nodemon": "^1.18.4",
     "precise-commits": "^1.0.2",
     "prettier": "1.14.3",
@@ -39,7 +40,16 @@
     "node": "^10.13.0"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "coverageDirectory": "test-results/coverage/",
+    "reporters": [
+      "default",
+      [
+        "jest-junit",
+        { "outputDirectory": "test-results/jest/", "outputName": "results.xml" }
+      ]
+    ]
   },
   "nodemonConfig": {
     "watch": [
