@@ -43,6 +43,12 @@ module.exports = async (app) => {
 		'Tako should be an internal GitHub App, to configure this see https://developer.github.com/apps/managing-github-apps/making-a-github-app-public-or-private/#private-installation-flow.'
 	);
 
+	const installationAccount = installations.data[0].account.login;
+
+	const administratorAccount = (await octokit.apps.get({})).data.owner.login;
+
+	assert(installationAccount === administratorAccount, 'Tako should only be installed on accounts administered by financial-times-sandbox');
+
 	const installationId = installations.data[0].id;
 
 	/**
