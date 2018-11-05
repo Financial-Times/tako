@@ -1,5 +1,14 @@
 const assert = require('assert').strict;
 
+class InitialisationError {
+	constructor(message, meta) {
+		Error.captureStackTrace(this, this.constructor);
+		this.name = this.constructor.name;
+		this.message = message;
+		this.meta = meta;
+	}
+}
+
 /**
  * Initialise the application.
  *
@@ -20,7 +29,9 @@ module.exports = async (app) => {
 	 * @type {import('probot').GitHubAPI}
 	 */
 	const octokit = await app.auth().catch((err) => {
-		throw new Error('Failed to authenticate as a GitHub App', err);
+		throw new InitialisationError('Failed to authenticate as a GitHub App', {
+			err
+		});
 	});
 
 	logger.debug(`Authenticated as a GitHub App`);
@@ -33,7 +44,7 @@ module.exports = async (app) => {
 	 * @see https://developer.github.com/apps/managing-github-apps/making-a-github-app-public-or-private/#private-installation-flow
 	 */
 	const installations = await octokit.apps.getInstallations().catch((err) => {
-		throw new Error('Failed to get the installations', err);
+		throw new InitialisationError('Failed to get the installations', { err });
 	});
 
 	logger.debug(`Found the installations`, installations.data.map((i) => i.id));
@@ -71,9 +82,9 @@ module.exports = async (app) => {
 	 * @type {import('probot').GitHubAPI}
 	 */
 	const installation = await app.auth(installationId).catch((err) => {
-		throw new Error(
+		throw new InitialisationError(
 			`Failed to authenticate as installation ${installationId}`,
-			err
+			{ err }
 		);
 	});
 
@@ -97,21 +108,28 @@ module.exports = async (app) => {
 	 * @see https://developer.github.com/v3/apps/installations/#installations
 	 * @see https://github.com/octokit/rest.js/blob/v15.15.1/README.md#api-previews
 	 */
-	(await installation.paginate(
-		installation.apps.getInstallationRepositories({
-			per_page: 100,
-			headers: {
-				accept:
-					'application/vnd.github.machine-man-preview+json,application/vnd.github.mercy-preview+json'
-			}
-		}),
-		(res) => res.data.repositories
-	)).forEach((repository) =>
-		repositoryStore.set(repository.id, {
-			name: repository.name,
-			topics: repository.topics || []
-		})
-	);
+	try {
+		(await installation.paginate(
+			installation.apps.getInstallationRepositories({
+				per_page: 100,
+				headers: {
+					accept:
+						'application/vnd.github.machine-man-preview+json,application/vnd.github.mercy-preview+json'
+				}
+			}),
+			(res) => res.data.repositories
+		)).forEach((repository) =>
+			repositoryStore.set(repository.id, {
+				name: repository.name,
+				topics: repository.topics || []
+			})
+		);
+	} catch (err) {
+		throw new InitialisationError(
+			`Failed to fetch repository information with apps.getInstallationRepositories`,
+			{ err }
+		);
+	}
 
 	logger.info(`Loaded ${repositoryStore.size} repositories`);
 };
