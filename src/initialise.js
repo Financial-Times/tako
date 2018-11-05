@@ -47,7 +47,10 @@ module.exports = async (app) => {
 
 	const administratorAccount = (await octokit.apps.get({})).data.owner.login;
 
-	assert(installationAccount === administratorAccount, 'Tako should only be installed on accounts administered by financial-times-sandbox');
+	assert(
+		installationAccount === administratorAccount,
+		'Tako should only be installed on accounts administered by financial-times-sandbox'
+	);
 
 	const installationId = installations.data[0].id;
 
