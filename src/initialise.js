@@ -92,20 +92,26 @@ module.exports = async (app) => {
 	logger.debug(`Created the repository store`);
 
 	/**
-	 * TODO: Document this.
+	 * To get access to the `topics` property we must pass in a custom accept header with the mercy-preview value.
+	 *
+	 * @see https://developer.github.com/v3/apps/installations/#installations
+	 * @see https://github.com/octokit/rest.js/blob/v15.15.1/README.md#api-previews
 	 */
 	(await installation.paginate(
 		installation.apps.getInstallationRepositories({
 			per_page: 100,
 			headers: {
-				accept: 'application/vnd.github.machine-man-preview+json,application/vnd.github.mercy-preview+json'
+				accept:
+					'application/vnd.github.machine-man-preview+json,application/vnd.github.mercy-preview+json'
 			}
 		}),
 		(res) => res.data.repositories
-	)).forEach((repository) => repositoryStore.set(repository.id, {
-		name: repository.name,
-		topics: repository.topics || []
-	}));
+	)).forEach((repository) =>
+		repositoryStore.set(repository.id, {
+			name: repository.name,
+			topics: repository.topics || []
+		})
+	);
 
 	logger.info(`Loaded ${repositoryStore.size} repositories`);
 };
