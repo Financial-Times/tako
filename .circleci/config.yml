@@ -11,10 +11,10 @@ jobs:
       - checkout
 
       - restore_cache:
-         keys:
-           - npm-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
-           - npm-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
-           - npm- # used if checksum fails
+          keys:
+            - npm-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - npm-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - npm- # used if checksum fails
 
       - run: npm install
 

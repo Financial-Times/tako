@@ -19,7 +19,8 @@
     "eslint-check": "eslint --print-config . | eslint-config-prettier-check",
     "test": "npm run lint && npm run unit-test",
     "unit-test": "jest",
-    "unit-test:watch": "jest --watch --notify --notifyMode=change"
+    "unit-test:watch": "jest --watch --notify --notifyMode=change",
+    "fmt": "prettier --write \"**/*.{js,json,yml,yaml}\""
   },
   "dependencies": {
     "probot": "^7.2.0"
@@ -47,7 +48,10 @@
       "default",
       [
         "jest-junit",
-        { "outputDirectory": "test-results/jest/", "outputName": "results.xml" }
+        {
+          "outputDirectory": "test-results/jest/",
+          "outputName": "results.xml"
+        }
       ]
     ]
   },

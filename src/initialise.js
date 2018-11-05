@@ -49,6 +49,11 @@ module.exports = async (app) => {
 	// https://developer.github.com/v3/apps/#response
 	const administratorAccount = (await octokit.apps.get({})).data.owner.login;
 
+	logger.debug(`Comparing installation account to App owner`, {
+		installation: installationAccount,
+		owner: administratorAccount
+	});
+
 	assert(
 		installationAccount === administratorAccount,
 		'Tako should only be installed on accounts administered by financial-times-sandbox'
@@ -86,10 +91,21 @@ module.exports = async (app) => {
 
 	logger.debug(`Created the repository store`);
 
+	/**
+	 * TODO: Document this.
+	 */
 	(await installation.paginate(
-		installation.apps.getInstallationRepositories(),
+		installation.apps.getInstallationRepositories({
+			per_page: 100,
+			headers: {
+				accept: 'application/vnd.github.machine-man-preview+json,application/vnd.github.mercy-preview+json'
+			}
+		}),
 		(res) => res.data.repositories
-	)).forEach((repository) => repositoryStore.set(repository.id, repository));
+	)).forEach((repository) => repositoryStore.set(repository.id, {
+		name: repository.name,
+		topics: repository.topics || []
+	}));
 
 	logger.info(`Loaded ${repositoryStore.size} repositories`);
 };
