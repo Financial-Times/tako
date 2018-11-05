@@ -14,7 +14,7 @@ const fixture = (fixture) => {
 jest.mock('../src/initialise');
 jest.mock('../src/routes');
 
-describe('Tako', () => {
+describe('index.js', () => {
 	let app;
 	let github;
 	let repositoryStore;
