@@ -46,6 +46,7 @@ module.exports = async (app) => {
 	// @see https://developer.github.com/v3/apps/#response-2
 	const installationAccount = installations.data[0].account.login;
 
+	// https://developer.github.com/v3/apps/#response
 	const administratorAccount = (await octokit.apps.get({})).data.owner.login;
 
 	assert(
