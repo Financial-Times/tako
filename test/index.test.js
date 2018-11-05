@@ -1,4 +1,5 @@
 const { Application } = require('probot');
+const repositoryStore = require('../src/repositories').instance;
 
 // Requiring our app implementation.
 const subject = require('../src/index');
@@ -17,7 +18,6 @@ jest.mock('../src/routes');
 describe('index.js', () => {
 	let app;
 	let github;
-	let repositoryStore;
 
 	beforeEach(() => {
 		app = new Application();
@@ -30,10 +30,10 @@ describe('index.js', () => {
 			//
 		};
 
-		repositoryStore = new Map();
-
-		// Add a repository store that we can interrogate.
-		app.repositoryStore = repositoryStore;
+		// Clear out repositoryStore before each test.
+		for (let key of repositoryStore.keys()) {
+			repositoryStore.delete(key);
+		}
 
 		// Passes the mocked out GitHub API into out app instance.
 		app.auth = () => Promise.resolve(github);

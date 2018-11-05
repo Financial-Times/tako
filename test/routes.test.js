@@ -1,23 +1,20 @@
 const { Application } = require('probot');
 const request = require('supertest');
 const express = require('express');
+const repositories = require('../src/repositories').instance;
 
-// // Requiring our app implementation.
+// Requiring our app implementation.
 const routes = require('../src/routes');
 
 describe('routes.js', () => {
 	let app;
 	let server;
-	let repositoryStore;
 
 	beforeEach(async () => {
 		app = new Application();
 		server = express();
-		repositoryStore = new Map();
 
-		repositoryStore.set(1, { name: 'next-foo-bar', topics: ['serverless'] });
-
-		app.repositoryStore = repositoryStore;
+		repositories.set(1, { name: 'next-foo-bar', topics: ['serverless'] });
 
 		// Register our routes with the empty application.
 		await routes(app);

@@ -1,3 +1,5 @@
+const repositoryStore = require('./repositories').instance;
+
 /**
  * Caching middleware, we don't want to cache responses.
  *
@@ -35,7 +37,7 @@ const router = (app) => {
 	/**
 	 * Convert repositoryStore into an object that we can pass into router.
 	 */
-	const repositories = Array.from(app.repositoryStore).map(
+	const repositories = Array.from(repositoryStore).map(
 		// eslint-disable-next-line no-unused-vars
 		([key, repository]) => ({
 			name: repository.name,

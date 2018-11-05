@@ -1,10 +1,18 @@
 const assert = require('assert').strict;
+const repositoryStore = require('./repositories').instance;
 
-class InitialisationError {
+class InitialisationError extends Error {
 	constructor(message, meta) {
-		Error.captureStackTrace(this, this.constructor);
+		// Calling parent constructor of base Error class.
+		super(message);
+
+		// Saving class name in the property of our custom error as a shortcut.
 		this.name = this.constructor.name;
-		this.message = message;
+
+		// Capturing stack trace, excluding constructor call from it.
+		Error.captureStackTrace(this, this.constructor);
+
+		// Typically we'll define an `err` property on meta.
 		this.meta = meta;
 	}
 }
@@ -89,18 +97,6 @@ module.exports = async (app) => {
 	});
 
 	logger.debug(`Authenticated as installation ${installationId}`);
-
-	/**
-	 * Create a store for our repositories.
-	 *
-	 * @type {Map}
-	 */
-	const repositoryStore = new Map();
-
-	// Add our repository store to the app.
-	app.repositoryStore = repositoryStore;
-
-	logger.debug(`Created the repository store`);
 
 	/**
 	 * To get access to the `topics` property we must pass in a custom accept header with the mercy-preview value.

@@ -1,5 +1,6 @@
 const routes = require('./routes');
 const initialise = require('./initialise');
+const repositoryStore = require('./repositories').instance;
 
 /**
  * @param {import('probot').Application} app - Probot's Application class.
@@ -25,7 +26,11 @@ module.exports = async (app) => {
 		'installation_repositories.added',
 		async ({ log, payload: { repositories_added } }) => {
 			repositories_added.forEach((repository) => {
-				app.repositoryStore.set(repository.id, repository);
+				repositoryStore.set(repository.id, {
+					name: repository.name,
+					topics: repository.topics || [] // TODO, fetch repository topics
+				});
+
 				log.info(`Added repository ${repository.full_name}`);
 			});
 		}
@@ -35,7 +40,8 @@ module.exports = async (app) => {
 		'installation_repositories.removed',
 		async ({ log, payload: { repositories_removed } }) => {
 			repositories_removed.forEach((repository) => {
-				app.repositoryStore.delete(repository.id);
+				repositoryStore.delete(repository.id);
+
 				log.info(`Removed repository ${repository.full_name}`);
 			});
 		}
