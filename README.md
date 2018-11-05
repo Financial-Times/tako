@@ -9,27 +9,31 @@ A GitHub App that helps maintain a large number of repositories in a GitHub orga
 `GET /tako/repositories`
 
 ```json
-[
-    {
-        "name": "next-foo-bar",
-        "topics": [ "next-app" ]
-    },
-    {
-        "name": "next-fizz-buzz",
-        "topics": [ "next-serverless" ]
-    }
-]
+{
+    "repositories": [
+        {
+            "name": "next-foo-bar",
+            "topics": [ "heroku", "express" ]
+        },
+        {
+            "name": "next-fizz-buzz",
+            "topics": [ "serverless" ]
+        }
+    ]
+}
 ```
 
-`GET /tako/repositories?topic=next-app`
+`GET /tako/repositories?topic=serverless`
 
 ```json
-[
-    {
-        "name": "next-foo-bar",
-        "topics": [ "next-app" ]
-    }
-]
+{
+    "repositories": [
+        {
+            "name": "next-foo-bar",
+            "topics": [ "serverless" ]
+        }
+    ]
+}
 ```
 
 ## Development
@@ -56,10 +60,6 @@ npm run dev
 4. Install the app in your personal GitHub account, then pick an example repository or two in the drop down
 
 5. Probot will then automatically create you a `.env` file in your local working directory (you can add `LOG_LEVEL=trace` for more verbose logging)
-
-6. From your browser, copy the installiation ID from the URL (e.g. at `https://github.com/settings/installations/123456` the ID is `123456`)
-
-7. Add `TAKO_INSTALLATION_ID` to your `.env` file, setting it's value to the ID you've just copied
 
 You're now good to go 🎉.
 
