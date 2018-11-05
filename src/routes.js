@@ -32,15 +32,17 @@ const router = (app) => {
 
 	log.debug(`registered the noCache middleware`);
 
+	/**
+	 * Convert repositoryStore into an object that we can pass into router.
+	 */
+	// eslint-disable-next-line no-unused-vars
+	const repositories = Array.from(app.repositoryStore).map(([ key, repository ]) => ({
+		name: repository.name,
+		topics: repository.topics
+	}));
+
 	router.get('/repositories', (req, res) => {
-		res.send({
-			repositories: [
-				{
-					name: 'next-foo-bar',
-					topics: ['next-heroku-platform', 'next-user-facing-app']
-				}
-			]
-		});
+		res.send({ repositories });
 	});
 
 	log.debug(`registered the /tako router`);
