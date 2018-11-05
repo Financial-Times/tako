@@ -3,6 +3,9 @@ const request = require('supertest');
 const express = require('express');
 const repositories = require('../src/repositories').instance;
 
+// Hardcode the bearer token for the test.
+process.env.BEARER_TOKEN = 'hunter2';
+
 // Requiring our app implementation.
 const routes = require('../src/routes');
 
@@ -23,9 +26,18 @@ describe('routes.js', () => {
 		server.use(app.router);
 	});
 
-	test('/tako/repositories responds with a 200 status code', () => {
+	test('reject unauthorised request when a bearer token is loaded', () => {
 		return request(server)
 			.get('/tako/repositories')
+			.set('Accept', 'application/json')
+			.expect(401);
+	});
+
+	test('accepts authorised request when a bearer token is loaded', () => {
+		return request(server)
+			.get('/tako/repositories')
+			.set('Accept', 'application/json')
+			.set('Authorization', 'Bearer hunter2')
 			.expect(200);
 	});
 
@@ -33,6 +45,7 @@ describe('routes.js', () => {
 		return request(server)
 			.get('/tako/repositories')
 			.set('Accept', 'application/json')
+			.set('Authorization', 'Bearer hunter2')
 			.expect('Content-Type', /json/);
 	});
 
@@ -40,6 +53,7 @@ describe('routes.js', () => {
 		return request(server)
 			.get('/tako/repositories')
 			.set('Accept', 'application/json')
+			.set('Authorization', 'Bearer hunter2')
 			.expect(200, {
 				repositories: [
 					{
@@ -54,6 +68,7 @@ describe('routes.js', () => {
 		return request(server)
 			.get('/tako/repositories')
 			.set('Accept', 'application/json')
+			.set('Authorization', 'Bearer hunter2')
 			.expect('Cache-Control', /max-age=0/);
 	});
 });

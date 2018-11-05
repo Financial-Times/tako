@@ -1,6 +1,13 @@
 const repositoryStore = require('./repositories').instance;
 
 /**
+ * Secure the endpoint using the `Authorization` header and a bearer token.
+ *
+ * curl -X GET 'https://ft-next-tako.herokuapp.com/tako/repositories' -H 'Authorization: Bearer hunter2'
+ */
+const bearerToken = process.env.BEARER_TOKEN;
+
+/**
  * Caching middleware, we don't want to cache responses.
  *
  * @param {import('express').Request} req
@@ -8,9 +15,24 @@ const repositoryStore = require('./repositories').instance;
  * @param {import('express').NextFunction} next
  */
 const noCache = (req, res, next) => {
-	res.set('cache-control', 'max-age=0');
+	res.set('Cache-Control', 'max-age=0');
 	next();
 };
+
+/**
+ * Authentication middleware.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ */
+const auth = (req, res, next) => {
+	if (req.get('Authorization') === `Bearer ${bearerToken}`) {
+		next();
+	} else {
+		res.sendStatus(401);
+	}
+}
 
 /**
  * Define the API for Tako.
@@ -33,6 +55,13 @@ const router = (app) => {
 	router.use(noCache);
 
 	logger.debug(`registered the noCache middleware`);
+
+	if (bearerToken) {
+		router.use(auth);
+		logger.debug(`registered the auth middleware`);
+	} else {
+		logger.debug(`skipped registered the auth middleware`);
+	}
 
 	/**
 	 * Convert repositoryStore into an object that we can pass into router.

@@ -11,6 +11,10 @@
     "WEBHOOK_SECRET": {
       "description": "A secret key for verifying the integrity of webhook requests. The value of this should also be set in the GitHub App at https://github.com/settings/apps."
     },
+    "BEARER_TOKEN": {
+      "description": "Set to a secret to secure requests to /tako/repositories.",
+      "required": false
+    },
     "LOG_LEVEL": {
       "description": "The verbosity of logs to show when running your app, which can be trace, debug, info, warn, error, or fatal.",
       "value": "info"
