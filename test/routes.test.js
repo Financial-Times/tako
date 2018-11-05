@@ -57,6 +57,6 @@ describe('routes.js', () => {
 		return request(server)
 			.get('/tako/repositories')
 			.set('Accept', 'application/json')
-			.expect('Cache-Control', /no-cache/);
+			.expect('Cache-Control', /max-age=0/);
 	});
 });
