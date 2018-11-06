@@ -32,7 +32,7 @@ const auth = (req, res, next) => {
 	} else {
 		res.sendStatus(401);
 	}
-}
+};
 
 /**
  * Define the API for Tako.

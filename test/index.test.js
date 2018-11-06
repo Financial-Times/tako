@@ -27,7 +27,11 @@ describe('index.js', () => {
 
 		// This is an easy way to mock out the GitHub API
 		github = {
-			//
+			repos: {
+				getTopics: jest
+					.fn()
+					.mockReturnValue(Promise.resolve({ names: ['foo-bar'] }))
+			}
 		};
 
 		// Clear out repositoryStore before each test.

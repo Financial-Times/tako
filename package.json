@@ -12,7 +12,7 @@
     "test": "npm run lint && npm run unit-test",
     "unit-test": "jest",
     "unit-test:watch": "jest --watch --notify --notifyMode=change",
-    "fmt": "prettier --write \"**/*.{js,json,yml,yaml}\""
+    "fmt": "prettier --write \"{src,test,.circleci}/**/*.{js,json,yml,yaml}\" package.json app.json .eslintrc.js"
   },
   "dependencies": {
     "probot": "^7.2.0"
@@ -57,5 +57,9 @@
     "hooks": {
       "pre-commit": "npm run lint"
     }
+  },
+  "prettier": {
+    "singleQuote": true,
+    "arrowParens": "always"
   }
 }
