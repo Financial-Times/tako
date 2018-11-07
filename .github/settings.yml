@@ -3,7 +3,11 @@ _extends: probot-config-next
 branches:
   - name: master
     protection:
+      required_pull_request_reviews: null
       required_status_checks:
+        strict: false
         contexts:
           - ci/circleci
           - security/snyk
+      enforce_admins: null
+      restrictions: null
