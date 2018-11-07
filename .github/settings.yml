@@ -4,5 +4,6 @@ branches:
   - name: master
     protection:
       required_status_checks:
-        - ci/circleci
-        - security/snyk
+        contexts:
+          - ci/circleci
+          - security/snyk
