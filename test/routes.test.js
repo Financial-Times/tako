@@ -24,12 +24,12 @@ describe('routes.js', () => {
 		github = {
 			apps: {
 				get: jest.fn().mockResolvedValue({
-					data: { owner: { login: 'umbrella-corp'}}
-				}),
+					data: { owner: { login: 'umbrella-corp' } }
+				})
 			},
 			search: {
 				repos: jest.fn().mockResolvedValue({
-					data: { items: [ { id: 1 } ] }
+					data: { items: [{ id: 1 }] }
 				})
 			},
 			// Assuming we're not going to paginate in these tests.

@@ -20,13 +20,13 @@ describe('initalise.js', () => {
 			apps: {
 				getInstallations: jest.fn().mockResolvedValue({
 					// The installation id.
-					data: [ { id: 1, account: { login: 'Financial-Times' } } ]
+					data: [{ id: 1, account: { login: 'Financial-Times' } }]
 				}),
 				get: jest.fn().mockResolvedValue({
 					data: { owner: { login: 'Financial-Times' } }
 				}),
 				getInstallationRepositories: jest.fn().mockResolvedValue({
-					data: { repositories: [ { id: 12345, name: 'foo-bar' } ] }
+					data: { repositories: [{ id: 12345, name: 'foo-bar' }] }
 				})
 			},
 			// Assuming we're not going to paginate in these tests.
@@ -61,7 +61,8 @@ describe('initalise.js', () => {
 
 	test('throws when the app.auth(id) call fails', async () => {
 		// Fail the second call to app.auth.
-		app.auth = jest.fn()
+		app.auth = jest
+			.fn()
 			.mockResolvedValueOnce(github)
 			.mockRejectedValue();
 

@@ -68,7 +68,7 @@ const router = (app) => {
 	 *
 	 * While Tako is starting up, this endpoint will respond with a 404 status code.
 	 */
-	router.get('/__gtg', (req, res) => res.send(200, "OK"));
+	router.get('/__gtg', (req, res) => res.send(200, 'OK'));
 
 	/**
 	 * Get the full list of managed repositories.

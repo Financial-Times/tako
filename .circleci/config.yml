@@ -25,6 +25,7 @@ jobs:
 
       - run: npm test
 
+      # Tried using npx, but there are weird issues when uploading.
       - run:
           name: codecov
           command: |

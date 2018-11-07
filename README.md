@@ -10,14 +10,14 @@ A GitHub App that helps maintain a large number of repositories in a GitHub orga
 
 ```json
 {
-    "repositories": [
-        {
-            "name": "next-foo-bar"
-        },
-        {
-            "name": "next-fizz-buzz"
-        }
-    ]
+  "repositories": [
+    {
+      "name": "next-foo-bar"
+    },
+    {
+      "name": "next-fizz-buzz"
+    }
+  ]
 }
 ```
 
@@ -25,11 +25,11 @@ A GitHub App that helps maintain a large number of repositories in a GitHub orga
 
 ```json
 {
-    "repositories": [
-        {
-            "name": "next-foo-bar"
-        }
-    ]
+  "repositories": [
+    {
+      "name": "next-foo-bar"
+    }
+  ]
 }
 ```
 
