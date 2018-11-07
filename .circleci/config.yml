@@ -25,6 +25,12 @@ jobs:
 
       - run: npm test
 
+      - run:
+          name: codecov
+          command: |
+            npm install --save-dev codecov
+            ./node_modules/.bin/codecov
+
       - store_test_results:
           path: test-results/jest/
 
