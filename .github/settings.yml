@@ -8,6 +8,6 @@ branches:
         strict: false
         contexts:
           - ci/circleci
-          - security/snyk
+          - security/snyk - package.json (Customer Products)
       enforce_admins: null
       restrictions: null
