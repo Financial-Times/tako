@@ -12,25 +12,22 @@ A GitHub App that helps maintain a large number of repositories in a GitHub orga
 {
     "repositories": [
         {
-            "name": "next-foo-bar",
-            "topics": [ "heroku", "express" ]
+            "name": "next-foo-bar"
         },
         {
-            "name": "next-fizz-buzz",
-            "topics": [ "serverless" ]
+            "name": "next-fizz-buzz"
         }
     ]
 }
 ```
 
-`GET /tako/repositories?topic=serverless`
+`GET /tako/repositories/topic/serverless`
 
 ```json
 {
     "repositories": [
         {
-            "name": "next-foo-bar",
-            "topics": [ "serverless" ]
+            "name": "next-foo-bar"
         }
     ]
 }

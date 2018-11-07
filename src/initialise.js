@@ -98,28 +98,17 @@ module.exports = async (app) => {
 
 	logger.debug(`Authenticated as installation ${installationId}`);
 
-	/**
-	 * To get access to the `topics` property we must pass in a custom accept header with the mercy-preview value.
-	 *
-	 * @see https://developer.github.com/v3/apps/installations/#installations
-	 * @see https://github.com/octokit/rest.js/blob/v15.15.1/README.md#api-previews
-	 */
 	try {
-		(await installation.paginate(
-			installation.apps.getInstallationRepositories({
-				per_page: 100,
-				headers: {
-					accept:
-						'application/vnd.github.machine-man-preview+json,application/vnd.github.mercy-preview+json'
-				}
-			}),
-			(res) => res.data.repositories
-		)).forEach((repository) =>
-			repositoryStore.set(repository.id, {
-				name: repository.name,
-				topics: repository.topics || []
-			})
+		// Get the repositories this app is installed on.
+		const repositories = await installation.paginate(
+			installation.apps.getInstallationRepositories({ per_page: 100 }),
+			(res) => res.data.repositories // Pull out only the list of repositories from each response.
 		);
+
+		// Save each repository to our global map of repositories.
+		repositories.forEach(({ id, name }) => {
+			repositoryStore.set(id, { id, name });
+		});
 	} catch (err) {
 		throw new InitialisationError(
 			`Failed to fetch repository information with apps.getInstallationRepositories`,

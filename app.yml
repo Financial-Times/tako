@@ -9,7 +9,7 @@
 
 # The list of events the GitHub App subscribes to.
 # Uncomment the event names below to enable them.
-default_events:
+default_events: []
   # - check_run
   # - check_suite
   # - commit_comment
@@ -37,12 +37,12 @@ default_events:
   # - pull_request_review_comment
   # - push
   # - release
-  - repository
+  # - repository
   # - repository_import
   # - status
   # - team
   # - team_add
-  - watch
+  # - watch
 
   # The set of permissions needed by the GitHub App. The format of the object uses
   # the permission name for the key (for example, issues) and the access type for

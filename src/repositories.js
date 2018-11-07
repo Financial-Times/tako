@@ -5,6 +5,10 @@
  *
  * ```
  * const repositoryStore = require('./repositories').instance;
+ *
+ * const repo = { id: 1, name: 'foo-bar' };
+ *
+ * repositoryStore.set(repo.id, repo);
  * ```
  */
 const repositoryStore = new Map();

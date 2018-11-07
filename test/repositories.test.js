@@ -6,7 +6,7 @@ describe('repositories.js', () => {
 	});
 
 	test('instance should be global', () => {
-		const repository = { id: 1, name: 'foo-bar', topics: [] };
+		const repository = { id: 1, name: 'foo-bar' };
 
 		repositories.set(repository.id, repository);
 
