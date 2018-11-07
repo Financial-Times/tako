@@ -1,1 +1,8 @@
 _extends: probot-config-next
+
+branches:
+  - name: master
+    protection:
+      required_status_checks:
+        - ci/circleci
+        - security/snyk
