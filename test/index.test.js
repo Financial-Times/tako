@@ -28,9 +28,7 @@ describe('index.js', () => {
 		// This is an easy way to mock out the GitHub API
 		github = {
 			repos: {
-				getTopics: jest
-					.fn()
-					.mockReturnValue(Promise.resolve({ names: ['foo-bar'] }))
+				getTopics: jest.fn().mockResolvedValue({ names: ['foo-bar'] })
 			}
 		};
 
@@ -40,7 +38,7 @@ describe('index.js', () => {
 		}
 
 		// Passes the mocked out GitHub API into out app instance.
-		app.auth = () => Promise.resolve(github);
+		app.auth = jest.fn().mockResolvedValue(github);
 	});
 
 	test('installation_repositories.added_all', async () => {

@@ -1,4 +1,4 @@
-const assert = require('assert').strict;
+const assert = require('assert');
 const repositoryStore = require('./repositories').instance;
 
 class InitialisationError extends Error {
@@ -50,6 +50,7 @@ module.exports = async (app) => {
 	 * Tako should be a private (also know as internal) GitHub App, installed on the same account it is administered by.
 	 *
 	 * @see https://developer.github.com/apps/managing-github-apps/making-a-github-app-public-or-private/#private-installation-flow
+	 * @see https://octokit.github.io/rest.js/#api-Apps-getInstallations
 	 */
 	const installations = await octokit.apps.getInstallations().catch((err) => {
 		throw new InitialisationError('Failed to get the installations', { err });
@@ -66,7 +67,7 @@ module.exports = async (app) => {
 	const installationAccount = installations.data[0].account.login;
 
 	// https://developer.github.com/v3/apps/#response
-	const administratorAccount = (await octokit.apps.get({})).data.owner.login;
+	const administratorAccount = (await octokit.apps.get()).data.owner.login;
 
 	logger.debug(`Comparing installation account to App owner`, {
 		installation: installationAccount,
@@ -86,6 +87,7 @@ module.exports = async (app) => {
 	 * This uses a private method on app, as we don't have an authenticated event context here.
 	 *
 	 * @see https://developer.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-an-installation
+	 * @see https://probot.github.io/api/latest/classes/application.html#auth
 	 *
 	 * @type {import('probot').GitHubAPI}
 	 */
@@ -100,6 +102,7 @@ module.exports = async (app) => {
 
 	try {
 		// Get the repositories this app is installed on.
+		// @see https://octokit.github.io/rest.js/#api-Apps-getInstallationRepositories
 		const repositories = await installation.paginate(
 			installation.apps.getInstallationRepositories({ per_page: 100 }),
 			(res) => res.data.repositories // Pull out only the list of repositories from each response.

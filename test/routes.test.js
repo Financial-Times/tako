@@ -23,14 +23,14 @@ describe('routes.js', () => {
 		// Mock out call to the GitHub API for the topic search.
 		github = {
 			apps: {
-				get: jest.fn().mockReturnValue(Promise.resolve({
+				get: jest.fn().mockResolvedValue({
 					data: { owner: { login: 'umbrella-corp'}}
-				})),
+				}),
 			},
 			search: {
-				repos: jest.fn().mockReturnValue(Promise.resolve({
+				repos: jest.fn().mockResolvedValue({
 					data: { items: [ { id: 1 } ] }
-				}))
+				})
 			},
 			// Assuming we're not going to paginate in these tests.
 			paginate: async (octokitCall, process) => {
@@ -119,10 +119,7 @@ describe('routes.js', () => {
 	});
 
 	test('/tako/repositories/topic/this-will-break responds with an error', async () => {
-		// Force an exception.
-		app.auth = () => {
-			throw new Error('Testing an error thrown by octokit.');
-		};
+		app.auth = jest.fn().mockRejectedValue();
 
 		await request(server)
 			.get('/tako/repositories/topic/this-will-break')
