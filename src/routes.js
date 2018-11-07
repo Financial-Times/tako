@@ -108,40 +108,41 @@ const router = (app) => {
 		logger.trace(`Searching by topic`, { topic });
 
 		try {
+			// Get a GitHub App authenticated instance of octokit.
+			const octokit = await app.auth();
 
-		// Get a GitHub App authenticated instance of octokit.
-		const octokit = await app.auth();
+			/**
+			 * We should be an internal GitHub App, so we can limit our search
+			 * to the org that we are owned by.
+			 */
+			const org = (await octokit.apps.get()).data.owner.login;
 
-		/**
-		 * We should be an internal GitHub App, so we can limit our search
-		 * to the org that we are owned by.
-		 */
-		const org = (await octokit.apps.get()).data.owner.login;
+			// Search for all repositories in our org, by topic.
+			const results = await octokit.paginate(
+				octokit.search.repos({ q: `org:${org} topic:${topic}`, per_page: 100 }),
+				(res) => res.data.items.map((item) => item.id) // Pull out only the repository ID from the results.
+			);
 
-		// Search for all repositories in our org, by topic.
-		const results = await octokit.paginate(
-			octokit.search.repos({ q: `org:${org} topic:${topic}`, per_page: 100 }),
-			(res) => res.data.items.map((item) => item.id) // Pull out only the repository ID from the results.
-		);
+			// Filter out any repository that we don't manage, and map to just the name property.
+			const filtered = repositories
+				.filter((r) => results.includes(r.id))
+				.map(({ name }) => ({ name }));
 
-		// Filter out any repository that we don't manage, and map to just the name property.
-		const filtered = repositories
-			.filter((r) => results.includes(r.id))
-			.map(({ name }) => ({ name }));
+			logger.trace(`Search results after filtering`, { filtered });
 
-		logger.trace(`Search results after filtering`, { filtered });
+			res.send({ repositories: filtered });
+		} catch (err) {
+			/**
+			 * Throwing an error leads to a 404 response in Probot, so we should
+			 * explicitly return a 500 status code if we encounter an error.
+			 */
+			res.sendStatus(500);
 
-		res.send({ repositories: filtered });
-	} catch (err) {
-		/**
-		 * Throwing an error leads to a 404 response in Probot, so we should
-		 * explicitly return a 500 status code if we encounter an error.
-		 */
-		res.sendStatus(500);
+			logger.error(err);
 
-		// Re-throw so that this bubbles into any other exception handling.
-		throw err;
-	}
+			// Re-throw so that this bubbles into any other exception handling.
+			throw err;
+		}
 	});
 
 	logger.debug(`registered the /tako router`);

@@ -12,6 +12,7 @@ const routes = require('../src/routes');
 describe('routes.js', () => {
 	let app;
 	let server;
+	let github;
 
 	beforeEach(async () => {
 		app = new Application();
@@ -20,6 +21,25 @@ describe('routes.js', () => {
 		repositories.set(1, { id: 1, name: 'next-foo-bar' });
 
 		// Mock out call to the GitHub API for the topic search.
+		github = {
+			apps: {
+				get: jest.fn().mockReturnValue(Promise.resolve({
+					data: { owner: { login: 'umbrella-corp'}}
+				})),
+			},
+			search: {
+				repos: jest.fn().mockReturnValue(Promise.resolve({
+					data: { items: [ { id: 1 } ] }
+				}))
+			},
+			// Assuming we're not going to paginate in these tests.
+			paginate: async (octokitCall, process) => {
+				return Promise.resolve(process(await octokitCall));
+			}
+		};
+
+		// Passes the mocked out GitHub API into out app instance.
+		app.auth = () => Promise.resolve(github);
 
 		// Register our routes with the empty application.
 		await routes(app);
@@ -59,13 +79,13 @@ describe('routes.js', () => {
 			.get('/tako/repositories')
 			.set('Accept', 'application/json')
 			.set('Authorization', 'Bearer hunter2')
-			.expect('Cache-Control', /max-age=0/);
+			.expect('Cache-Control', 'max-age=0');
 
 		await request(server)
 			.get('/tako/repositories/topic/expressjs')
 			.set('Accept', 'application/json')
 			.set('Authorization', 'Bearer hunter2')
-			.expect('Cache-Control', /max-age=0/);
+			.expect('Cache-Control', 'max-age=0');
 	});
 
 	test('/tako/repositories reponds ok', async () => {
@@ -73,7 +93,7 @@ describe('routes.js', () => {
 			.get('/tako/repositories')
 			.set('Accept', 'application/json')
 			.set('Authorization', 'Bearer hunter2')
-			.expect('Content-Type', /json/)
+			.expect('Content-Type', 'application/json; charset=utf-8')
 			.expect(200, {
 				repositories: [
 					{
@@ -88,14 +108,26 @@ describe('routes.js', () => {
 			.get('/tako/repositories/topic/expressjs')
 			.set('Accept', 'application/json')
 			.set('Authorization', 'Bearer hunter2')
-			.expect('Content-Type', /json/)
+			.expect('Content-Type', 'application/json; charset=utf-8')
 			.expect(200, {
-				topic: 'expressjs',
 				repositories: [
 					{
 						name: 'next-foo-bar'
 					}
 				]
 			});
+	});
+
+	test('/tako/repositories/topic/this-will-break responds with an error', async () => {
+		// Force an exception.
+		app.auth = () => {
+			throw new Error('Testing an error thrown by octokit.');
+		};
+
+		await request(server)
+			.get('/tako/repositories/topic/this-will-break')
+			.set('Accept', 'application/json')
+			.set('Authorization', 'Bearer hunter2')
+			.expect(500);
 	});
 });
