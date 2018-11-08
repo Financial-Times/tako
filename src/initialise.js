@@ -1,5 +1,5 @@
-const assert = require('assert');
-const repositoryStore = require('./repositories').instance;
+const assert = require("assert");
+const repositoryStore = require("./repositories").instance;
 
 class InitialisationError extends Error {
 	constructor(message, meta) {
@@ -22,9 +22,9 @@ class InitialisationError extends Error {
  *
  * @param {import('probot').Application} app - Probot's Application class.
  */
-module.exports = async (app) => {
+module.exports = async app => {
 	// Create a scoped logger to track the initialisation.
-	const logger = app.log.child({ name: 'init' });
+	const logger = app.log.child({ name: "init" });
 
 	/**
 	 * Get a GitHub App authenticated GitHub API client.
@@ -36,8 +36,8 @@ module.exports = async (app) => {
 	 *
 	 * @type {import('probot').GitHubAPI}
 	 */
-	const octokit = await app.auth().catch((err) => {
-		throw new InitialisationError('Failed to authenticate as a GitHub App', {
+	const octokit = await app.auth().catch(err => {
+		throw new InitialisationError("Failed to authenticate as a GitHub App", {
 			err
 		});
 	});
@@ -52,15 +52,15 @@ module.exports = async (app) => {
 	 * @see https://developer.github.com/apps/managing-github-apps/making-a-github-app-public-or-private/#private-installation-flow
 	 * @see https://octokit.github.io/rest.js/#api-Apps-getInstallations
 	 */
-	const installations = await octokit.apps.getInstallations().catch((err) => {
-		throw new InitialisationError('Failed to get the installations', { err });
+	const installations = await octokit.apps.getInstallations().catch(err => {
+		throw new InitialisationError("Failed to get the installations", { err });
 	});
 
-	logger.debug(`Found the installations`, installations.data.map((i) => i.id));
+	logger.debug(`Found the installations`, installations.data.map(i => i.id));
 
 	assert(
 		Array.isArray(installations.data) && installations.data.length === 1,
-		'Tako should be an internal GitHub App, to configure this see https://developer.github.com/apps/managing-github-apps/making-a-github-app-public-or-private/#private-installation-flow.'
+		"Tako should be an internal GitHub App, to configure this see https://developer.github.com/apps/managing-github-apps/making-a-github-app-public-or-private/#private-installation-flow."
 	);
 
 	// @see https://developer.github.com/v3/apps/#response-2
@@ -76,7 +76,7 @@ module.exports = async (app) => {
 
 	assert(
 		installationAccount === administratorAccount,
-		'Tako should only be installed on accounts administered by financial-times-sandbox'
+		"Tako should only be installed on accounts administered by financial-times-sandbox"
 	);
 
 	const installationId = installations.data[0].id;
@@ -91,7 +91,7 @@ module.exports = async (app) => {
 	 *
 	 * @type {import('probot').GitHubAPI}
 	 */
-	const installation = await app.auth(installationId).catch((err) => {
+	const installation = await app.auth(installationId).catch(err => {
 		throw new InitialisationError(
 			`Failed to authenticate as installation ${installationId}`,
 			{ err }
@@ -105,7 +105,7 @@ module.exports = async (app) => {
 		// @see https://octokit.github.io/rest.js/#api-Apps-getInstallationRepositories
 		const repositories = await installation.paginate(
 			installation.apps.getInstallationRepositories({ per_page: 100 }),
-			(res) => res.data.repositories // Pull out only the list of repositories from each response.
+			res => res.data.repositories // Pull out only the list of repositories from each response.
 		);
 
 		// Save each repository to our global map of repositories.

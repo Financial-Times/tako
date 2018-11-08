@@ -1,15 +1,15 @@
-const { Application } = require('probot');
-const request = require('supertest');
-const express = require('express');
-const repositories = require('../src/repositories').instance;
+const { Application } = require("probot");
+const request = require("supertest");
+const express = require("express");
+const repositories = require("../src/repositories").instance;
 
 // Hardcode the bearer token for the test.
-process.env.BEARER_TOKEN = 'hunter2';
+process.env.BEARER_TOKEN = "hunter2";
 
 // Requiring our app implementation.
-const routes = require('../src/routes');
+const routes = require("../src/routes");
 
-describe('routes.js', () => {
+describe("routes.js", () => {
 	let app;
 	let server;
 	let github;
@@ -18,13 +18,13 @@ describe('routes.js', () => {
 		app = new Application();
 		server = express();
 
-		repositories.set(1, { id: 1, name: 'next-foo-bar' });
+		repositories.set(1, { id: 1, name: "next-foo-bar" });
 
 		// Mock out call to the GitHub API for the topic search.
 		github = {
 			apps: {
 				get: jest.fn().mockResolvedValue({
-					data: { owner: { login: 'umbrella-corp' } }
+					data: { owner: { login: "umbrella-corp" } }
 				})
 			},
 			search: {
@@ -48,84 +48,84 @@ describe('routes.js', () => {
 		server.use(app.router);
 	});
 
-	test('reject unauthorised request when a bearer token is loaded', async () => {
+	test("reject unauthorised request when a bearer token is loaded", async () => {
 		await request(server)
-			.get('/tako/repositories')
-			.set('Accept', 'application/json')
+			.get("/tako/repositories")
+			.set("Accept", "application/json")
 			.expect(401);
 
 		await request(server)
-			.get('/tako/repositories?topic=express')
-			.set('Accept', 'application/json')
+			.get("/tako/repositories?topic=express")
+			.set("Accept", "application/json")
 			.expect(401);
 	});
 
-	test('accepts authorised request when a bearer token is loaded', async () => {
+	test("accepts authorised request when a bearer token is loaded", async () => {
 		await request(server)
-			.get('/tako/repositories')
-			.set('Accept', 'application/json')
-			.set('Authorization', 'Bearer hunter2')
+			.get("/tako/repositories")
+			.set("Accept", "application/json")
+			.set("Authorization", "Bearer hunter2")
 			.expect(200);
 
 		await request(server)
-			.get('/tako/repositories?topic=express')
-			.set('Accept', 'application/json')
-			.set('Authorization', 'Bearer hunter2')
+			.get("/tako/repositories?topic=express")
+			.set("Accept", "application/json")
+			.set("Authorization", "Bearer hunter2")
 			.expect(200);
 	});
 
-	test('noCache sets a cache-control header with a value of max-age=0', async () => {
+	test("noCache sets a cache-control header with a value of max-age=0", async () => {
 		await request(server)
-			.get('/tako/repositories')
-			.set('Accept', 'application/json')
-			.set('Authorization', 'Bearer hunter2')
-			.expect('Cache-Control', 'max-age=0');
+			.get("/tako/repositories")
+			.set("Accept", "application/json")
+			.set("Authorization", "Bearer hunter2")
+			.expect("Cache-Control", "max-age=0");
 
 		await request(server)
-			.get('/tako/repositories?topic=express')
-			.set('Accept', 'application/json')
-			.set('Authorization', 'Bearer hunter2')
-			.expect('Cache-Control', 'max-age=0');
+			.get("/tako/repositories?topic=express")
+			.set("Accept", "application/json")
+			.set("Authorization", "Bearer hunter2")
+			.expect("Cache-Control", "max-age=0");
 	});
 
-	test('/tako/repositories reponds ok', async () => {
+	test("/tako/repositories reponds ok", async () => {
 		await request(server)
-			.get('/tako/repositories')
-			.set('Accept', 'application/json')
-			.set('Authorization', 'Bearer hunter2')
-			.expect('Content-Type', 'application/json; charset=utf-8')
+			.get("/tako/repositories")
+			.set("Accept", "application/json")
+			.set("Authorization", "Bearer hunter2")
+			.expect("Content-Type", "application/json; charset=utf-8")
 			.expect(200, {
 				repositories: [
 					{
-						name: 'next-foo-bar'
+						name: "next-foo-bar"
 					}
 				]
 			});
 	});
 
-	test('/tako/repositories?topic=express responds ok', async () => {
+	test("/tako/repositories?topic=express responds ok", async () => {
 		await request(server)
-			.get('/tako/repositories?topic=express')
-			.set('Accept', 'application/json')
-			.set('Authorization', 'Bearer hunter2')
-			.expect('Content-Type', 'application/json; charset=utf-8')
+			.get("/tako/repositories?topic=express")
+			.set("Accept", "application/json")
+			.set("Authorization", "Bearer hunter2")
+			.expect("Content-Type", "application/json; charset=utf-8")
 			.expect(200, {
 				repositories: [
 					{
-						name: 'next-foo-bar'
+						name: "next-foo-bar"
 					}
 				]
 			});
 	});
 
-	test('/tako/repositories?topic=this-will-break responds with an error', async () => {
+	test("/tako/repositories?topic=this-will-break responds with an error", async () => {
 		app.auth = jest.fn().mockRejectedValue();
 
 		try {
 			await request(server)
-				.get('/tako/repositories?topic=this-will-break')
-				.set('Accept', 'application/json')
-				.set('Authorization', 'Bearer hunter2')
+				.get("/tako/repositories?topic=this-will-break")
+				.set("Accept", "application/json")
+				.set("Authorization", "Bearer hunter2")
 				.expect(500);
 		} catch (err) {
 			// We're looking for the 500 status code.

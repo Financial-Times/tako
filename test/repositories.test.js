@@ -1,16 +1,16 @@
-const repositories = require('../src/repositories').instance;
+const repositories = require("../src/repositories").instance;
 
-describe('repositories.js', () => {
-	test('instance property returns a Map', () => {
+describe("repositories.js", () => {
+	test("instance property returns a Map", () => {
 		expect(repositories).toBeInstanceOf(Map);
 	});
 
-	test('instance should be global', () => {
-		const repository = { id: 1, name: 'foo-bar' };
+	test("instance should be global", () => {
+		const repository = { id: 1, name: "foo-bar" };
 
 		repositories.set(repository.id, repository);
 
-		const subject = require('../src/repositories').instance;
+		const subject = require("../src/repositories").instance;
 
 		expect(subject.get(repository.id)).toBe(repository);
 

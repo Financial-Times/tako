@@ -1,4 +1,4 @@
-const repositoryStore = require('./repositories').instance;
+const repositoryStore = require("./repositories").instance;
 
 /**
  * Secure the endpoint using the `Authorization` header and a bearer token.
@@ -15,7 +15,7 @@ const bearerToken = process.env.BEARER_TOKEN;
  * @param {import('express').NextFunction} next
  */
 const noCache = (req, res, next) => {
-	res.set('Cache-Control', 'max-age=0');
+	res.set("Cache-Control", "max-age=0");
 	next();
 };
 
@@ -27,7 +27,7 @@ const noCache = (req, res, next) => {
  * @param {import('express').NextFunction} next
  */
 const auth = (req, res, next) => {
-	if (req.get('Authorization') === `Bearer ${bearerToken}`) {
+	if (req.get("Authorization") === `Bearer ${bearerToken}`) {
 		next();
 	} else {
 		res.sendStatus(401);
@@ -45,11 +45,11 @@ const auth = (req, res, next) => {
  *
  * @param {import('probot').Application} app
  */
-const router = (app) => {
-	const logger = app.log.child({ name: 'api' });
+const router = app => {
+	const logger = app.log.child({ name: "api" });
 
 	// Get an express router from the Probot application instance
-	const router = app.route('/tako');
+	const router = app.route("/tako");
 
 	// Responses could frequently change, so send a sensible cache-control header.
 	router.use(noCache);
@@ -68,12 +68,12 @@ const router = (app) => {
 	 *
 	 * While Tako is starting up, this endpoint will respond with a 404 status code.
 	 */
-	router.get('/__gtg', (req, res) => res.send(200, 'OK'));
+	router.get("/__gtg", (req, res) => res.send(200, "OK"));
 
 	/**
 	 * Get yourself a list of repositories.
 	 */
-	router.get('/repositories', async (req, res) => {
+	router.get("/repositories", async (req, res) => {
 		if (req.query.topic) {
 			await handleFiltered(req, res);
 		} else {
@@ -96,7 +96,7 @@ const router = (app) => {
 		);
 
 		res.send({ repositories });
-	}
+	};
 
 	/**
 	 * Handle the route for /repositories, filtered by topic.
@@ -135,12 +135,12 @@ const router = (app) => {
 			// Search for all repositories in our org, by topic.
 			const results = await octokit.paginate(
 				octokit.search.repos({ q: `org:${org} topic:${topic}`, per_page: 100 }),
-				(res) => res.data.items.map((item) => item.id) // Pull out only the repository ID from the results.
+				res => res.data.items.map(item => item.id) // Pull out only the repository ID from the results.
 			);
 
 			// Filter out any repository that we don't manage, and map to just the name property.
 			const filtered = repositories
-				.filter((r) => results.includes(r.id))
+				.filter(r => results.includes(r.id))
 				.map(({ name }) => ({ name }));
 
 			logger.trace(`Search results after filtering`, { filtered });
@@ -156,7 +156,7 @@ const router = (app) => {
 			// Re-throw so that this bubbles into any other exception handling.
 			throw err;
 		}
-	}
+	};
 
 	logger.debug(`registered the /tako router`);
 };

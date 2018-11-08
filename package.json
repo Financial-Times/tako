@@ -56,9 +56,5 @@
     "hooks": {
       "pre-commit": "npm run lint"
     }
-  },
-  "prettier": {
-    "singleQuote": true,
-    "arrowParens": "always"
   }
 }

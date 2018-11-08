@@ -1,16 +1,16 @@
-const routes = require('./routes');
-const initialise = require('./initialise');
-const repositoryStore = require('./repositories').instance;
+const routes = require("./routes");
+const initialise = require("./initialise");
+const repositoryStore = require("./repositories").instance;
 
 /**
  * @param {import('probot').Application} app - Probot's Application class.
  */
-module.exports = async (app) => {
+module.exports = async app => {
 	// Ensure that we crash Probot if we are unable to initialise.
 	try {
 		await initialise(app);
 	} catch (err) {
-		app.log.fatal('Failed to initialise', err);
+		app.log.fatal("Failed to initialise", err);
 		process.exit(1);
 	}
 
@@ -18,7 +18,7 @@ module.exports = async (app) => {
 	try {
 		await routes(app);
 	} catch (err) {
-		app.log.fatal('Failed to load API routes', err);
+		app.log.fatal("Failed to load API routes", err);
 		process.exit(1);
 	}
 
@@ -27,11 +27,11 @@ module.exports = async (app) => {
 	/**
 	 * Add new repositories to the API.
 	 */
-	app.on('installation_repositories.added', async (context) => {
+	app.on("installation_repositories.added", async context => {
 		// Pull out the list of added repositories.
 		const added = context.payload.repositories_added;
 
-		added.forEach(async (repository) => {
+		added.forEach(async repository => {
 			// Save this new repository.
 			repositoryStore.set(repository.id, {
 				id: repository.id,
@@ -45,11 +45,11 @@ module.exports = async (app) => {
 	/**
 	 * Remove untracked repositories from the API.
 	 */
-	app.on('installation_repositories.removed', async (context) => {
+	app.on("installation_repositories.removed", async context => {
 		// Pull out the list of removed repositories.
 		const removed = context.payload.repositories_removed;
 
-		removed.forEach((repository) => {
+		removed.forEach(repository => {
 			// Remove the repository by it's ID.
 			repositoryStore.delete(repository.id);
 

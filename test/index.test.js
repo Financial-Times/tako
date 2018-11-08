@@ -1,21 +1,21 @@
-const { Application } = require('probot');
-const repositoryStore = require('../src/repositories').instance;
+const { Application } = require("probot");
+const repositoryStore = require("../src/repositories").instance;
 
 // Requiring our app implementation.
-const subject = require('../src/index');
+const subject = require("../src/index");
 
 // Helper for transforming events copied from Smee.
-const fixture = (fixture) => {
+const fixture = fixture => {
 	const { event, payload } = require(`./fixtures/${fixture}.json`);
 	return { name: `${event}.${payload.action}`, payload };
 };
 
 // We must mock the require calls that `index.js` makes here, not under `describe`.
 // @see https://jestjs.io/docs/en/manual-mocks#examples
-jest.mock('../src/initialise');
-jest.mock('../src/routes');
+jest.mock("../src/initialise");
+jest.mock("../src/routes");
 
-describe('index.js', () => {
+describe("index.js", () => {
 	let app;
 	let github;
 
@@ -28,7 +28,7 @@ describe('index.js', () => {
 		// This is an easy way to mock out the GitHub API
 		github = {
 			repos: {
-				getTopics: jest.fn().mockResolvedValue({ names: ['foo-bar'] })
+				getTopics: jest.fn().mockResolvedValue({ names: ["foo-bar"] })
 			}
 		};
 
@@ -41,22 +41,22 @@ describe('index.js', () => {
 		app.auth = jest.fn().mockResolvedValue(github);
 	});
 
-	test('installation_repositories.added_all', async () => {
-		await app.receive(fixture('installation_repositories.added_all'));
+	test("installation_repositories.added_all", async () => {
+		await app.receive(fixture("installation_repositories.added_all"));
 
 		expect(repositoryStore.size).toEqual(3);
 	});
 
-	test('installation_repositories.added_selected', async () => {
-		await app.receive(fixture('installation_repositories.added_selected'));
+	test("installation_repositories.added_selected", async () => {
+		await app.receive(fixture("installation_repositories.added_selected"));
 
 		expect(repositoryStore.size).toEqual(3);
 	});
 
-	test('installation_repositories.removed', async () => {
-		const event = fixture('installation_repositories.removed');
+	test("installation_repositories.removed", async () => {
+		const event = fixture("installation_repositories.removed");
 
-		event.payload.repositories_removed.forEach((repository) => {
+		event.payload.repositories_removed.forEach(repository => {
 			repositoryStore.set(repository.id, repository);
 		});
 
