@@ -1,72 +1,59 @@
-const assert = require('assert');
-
-const ManagedRepositories = require('./lib/ManagedRepositories');
-
-const TAKO_INSTALLATION_ID = Number(process.env.TAKO_INSTALLATION_ID);
+const routes = require("./routes");
+const initialise = require("./initialise");
+const repositoryStore = require("./repositories").instance;
 
 /**
  * @param {import('probot').Application} app - Probot's Application class.
- * @param managedRepositories - An instance of the MangedRepositories class.
  */
-const initApiRoutes = (app, managedRepositories) => {
-	const router = app.route('/tako');
+module.exports = async app => {
+	// Ensure that we crash Probot if we are unable to initialise.
+	try {
+		await initialise(app);
+	} catch (err) {
+		app.log.fatal("Failed to initialise", err);
+		process.exit(1);
+	}
 
-	router.get('/repositories', async (req, res) => {
-		res.send(await managedRepositories.getList());
-	});
+	// And the same goes for loading our API routes.
+	try {
+		await routes(app);
+	} catch (err) {
+		app.log.fatal("Failed to load API routes", err);
+		process.exit(1);
+	}
 
-	router.delete('/repositories', async (req, res) => {
-		managedRepositories.purgeList();
+	// See https://developer.github.com/webhooks/#events for a list of all GitHub webhook events.
 
-		// Success, but no content for you!
-		res.sendStatus(204);
+	/**
+	 * Add new repositories to the API.
+	 */
+	app.on("installation_repositories.added", async context => {
+		// Pull out the list of added repositories.
+		const added = context.payload.repositories_added;
 
-		app.log.info({ event: 'TAKO_MANAGED_REPOSITORIES_LIST_PURGED' });
-	});
-};
-
-/**
- * @param {import('probot').Application} app - Probot's Application class.
- * @param managedRepositories - An instance of the MangedRepos class.
- */
-const initEventHandlers = (app, managedRepositories) => {
-	app.on(
-		['installation_repositories.added', 'installation_repositories.removed'],
-		(context) => {
-			const action = context.payload.action;
-
-			app.log.debug({
-				event: `TAKO_GITHUB_INSTALLATION_REPOSITORIES_${action.toUpperCase()}`,
-				repositories: context.payload[`repositories_${action}`]
+		added.forEach(async repository => {
+			// Save this new repository.
+			repositoryStore.set(repository.id, {
+				id: repository.id,
+				name: repository.name
 			});
 
-			managedRepositories.purgeList();
-			app.log.info({ event: 'TAKO_MANAGED_REPOSITORIES_LIST_PURGED' });
-		}
-	);
-};
+			context.log.info(`Added repository ${repository.full_name}`);
+		});
+	});
 
-/**
- * @param {import('probot').Application} app - Probot's Application class.
- */
-module.exports = async (app) => {
-	assert(
-		TAKO_INSTALLATION_ID,
-		'tako requires the TAKO_INSTALLATION_ID environment variable to be set - see the README for help with configuration'
-	);
+	/**
+	 * Remove untracked repositories from the API.
+	 */
+	app.on("installation_repositories.removed", async context => {
+		// Pull out the list of removed repositories.
+		const removed = context.payload.repositories_removed;
 
-	// NOTE: Retrieving the repoList in this way, outside of the context of
-	// a webhook event payload, makes the assumption that this GitHub app is
-	// only installed on one GitHub organisation e.g. financial-times-sandbox
-	const managedRepositories = new ManagedRepositories(app, TAKO_INSTALLATION_ID);
+		removed.forEach(repository => {
+			// Remove the repository by it's ID.
+			repositoryStore.delete(repository.id);
 
-	app.log.debug(
-		'tako is managing these repositories',
-		await managedRepositories.getList()
-	);
-
-	initApiRoutes(app, managedRepositories);
-	initEventHandlers(app, managedRepositories);
-
-	app.log.info('tako is ready to receive requests');
+			context.log.info(`Removed repository ${repository.full_name}`);
+		});
+	});
 };

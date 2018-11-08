@@ -1,50 +1,55 @@
 {
-  "name": "tako",
+  "name": "@financial-times/tako",
   "version": "1.0.0",
-  "description": "A GitHub application that helps maintain a large number of repositories in a GitHub organisation.",
-  "author": "Braimbridge, Adam <adam@braimbridge.com> (https://github.com/adambraimbridge)",
+  "description": "A GitHub App that provides an API to list the repositories it is installed on.",
+  "author": "The Financial Times Ltd.",
   "license": "MIT",
-  "repository": "https://github.com/financial-times-sandbox/tako.git",
-  "homepage": "https://github.com/financial-times-sandbox/tako",
-  "bugs": "https://github.com/financial-times-sandbox/tako/issues",
-  "keywords": [
-    "probot",
-    "github",
-    "probot-app"
-  ],
   "scripts": {
     "dev": "nodemon --exec \"npm start\"",
     "start": "probot run ./src/index.js",
-    "lint": "eslint --fix src/ test/",
-    "eslint-check": "eslint --print-config . | eslint-config-prettier-check",
+    "lint": "eslint src/ test/",
     "test": "npm run lint && npm run unit-test",
-    "unit-test": "jest --coverage",
-    "unit-test:watch": "jest --watch --notify --notifyMode=change --coverage"
+    "unit-test": "jest",
+    "fmt": "prettier --write '**/*.{js,json,yml,yaml,md}' '!test-results/**'"
   },
   "dependencies": {
     "probot": "^7.2.0"
   },
   "devDependencies": {
+    "codecov": "^3.1.0",
     "eslint": "^5.7.0",
     "eslint-config-prettier": "^3.1.0",
     "eslint-plugin-no-only-tests": "^2.0.1",
-    "husky": "^1.1.1",
+    "husky": "^1.1.3",
     "jest": "^23.6.0",
-    "nodemon": "^1.18.4",
-    "precise-commits": "^1.0.2",
+    "jest-junit": "^5.2.0",
+    "nodemon": "^1.18.6",
     "prettier": "1.14.3",
-    "smee-client": "^1.0.2"
+    "smee-client": "^1.0.2",
+    "supertest": "^3.3.0"
   },
   "engines": {
     "node": "^10.13.0"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "coverageDirectory": "test-results/coverage/",
+    "reporters": [
+      "default",
+      [
+        "jest-junit",
+        {
+          "outputDirectory": "test-results/jest/",
+          "outputName": "results.xml"
+        }
+      ]
+    ]
   },
   "nodemonConfig": {
     "watch": [
-      ".env",
-      "."
+      ".",
+      ".env"
     ]
   },
   "husky": {

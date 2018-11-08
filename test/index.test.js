@@ -1,46 +1,69 @@
-process.env.TAKO_INSTALLATION_ID = 1234;
+const { Application } = require("probot");
+const repositoryStore = require("../src/repositories").instance;
 
-const { Application } = require('probot');
-// Requiring our app implementation
-const myProbotApp = require('../src');
+// Requiring our app implementation.
+const subject = require("../src/index");
 
-const issuesOpenedPayload = require('./fixtures/issues.opened.json');
+// Helper for transforming events copied from Smee.
+const fixture = fixture => {
+	const { event, payload } = require(`./fixtures/${fixture}.json`);
+	return { name: `${event}.${payload.action}`, payload };
+};
 
-test('that we can run tests', () => {
-	// your real tests go here
-	expect(1 + 2 + 3).toBe(6);
-});
+// We must mock the require calls that `index.js` makes here, not under `describe`.
+// @see https://jestjs.io/docs/en/manual-mocks#examples
+jest.mock("../src/initialise");
+jest.mock("../src/routes");
 
-describe('My Probot app', () => {
+describe("index.js", () => {
 	let app;
 	let github;
 
 	beforeEach(() => {
 		app = new Application();
+
 		// Initialize the app based on the code from index.js
-		app.load(myProbotApp);
+		app.load(subject);
+
 		// This is an easy way to mock out the GitHub API
 		github = {
-			issues: {
-				createComment: jest.fn().mockReturnValue(Promise.resolve({}))
+			repos: {
+				getTopics: jest.fn().mockResolvedValue({ names: ["foo-bar"] })
 			}
 		};
-		// Passes the mocked out GitHub API into out app instance
-		app.auth = () => Promise.resolve(github);
+
+		// Clear out repositoryStore before each test.
+		for (let key of repositoryStore.keys()) {
+			repositoryStore.delete(key);
+		}
+
+		// Passes the mocked out GitHub API into out app instance.
+		app.auth = jest.fn().mockResolvedValue(github);
 	});
 
-	test('creates a comment when an issue is opened', async () => {
-		// Simulates delivery of an issues.opened webhook
-		await app.receive({
-			name: 'issues.opened',
-			payload: issuesOpenedPayload
+	test("installation_repositories.added_all", async () => {
+		await app.receive(fixture("installation_repositories.added_all"));
+
+		expect(repositoryStore.size).toEqual(3);
+	});
+
+	test("installation_repositories.added_selected", async () => {
+		await app.receive(fixture("installation_repositories.added_selected"));
+
+		expect(repositoryStore.size).toEqual(3);
+	});
+
+	test("installation_repositories.removed", async () => {
+		const event = fixture("installation_repositories.removed");
+
+		event.payload.repositories_removed.forEach(repository => {
+			repositoryStore.set(repository.id, repository);
 		});
 
-		// This test passes if the code in your index.js file calls `context.github.issues.createComment`
-		expect(true).toEqual(true);
-		// expect(github.issues.createComment).toHaveBeenCalled();
+		expect(repositoryStore.size).toEqual(3);
+
+		await app.receive(event);
+
+		expect(repositoryStore.size).toEqual(0);
 	});
 });
-
-// For more information about testing with Jest see:
-// https://facebook.github.io/jest/

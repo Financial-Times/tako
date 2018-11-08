@@ -10,44 +10,45 @@
 # The list of events the GitHub App subscribes to.
 # Uncomment the event names below to enable them.
 default_events:
-# - check_run
-# - check_suite
-# - commit_comment
-# - create
-# - delete
-# - deployment
-# - deployment_status
-# - fork
-# - gollum
-# - issue_comment
-- issues
-# - label
-# - milestone
-# - member
-# - membership
-# - org_block
-# - organization
-# - page_build
-# - project
-# - project_card
-# - project_column
-# - public
-# - pull_request
-# - pull_request_review
-# - pull_request_review_comment
-# - push
-# - release
-# - repository
-# - repository_import
-# - status
-# - team
-# - team_add
-# - watch
+  []
+  # - check_run
+  # - check_suite
+  # - commit_comment
+  # - create
+  # - delete
+  # - deployment
+  # - deployment_status
+  # - fork
+  # - gollum
+  # - issue_comment
+  # - issues
+  # - label
+  # - milestone
+  # - member
+  # - membership
+  # - org_block
+  # - organization
+  # - page_build
+  # - project
+  # - project_card
+  # - project_column
+  # - public
+  # - pull_request
+  # - pull_request_review
+  # - pull_request_review_comment
+  # - push
+  # - release
+  # - repository
+  # - repository_import
+  # - status
+  # - team
+  # - team_add
+  # - watch
+  # The set of permissions needed by the GitHub App. The format of the object uses
+  # the permission name for the key (for example, issues) and the access type for
+  # the value (for example, write).
+  # Valid values are `read`, `write`, and `none`
 
-# The set of permissions needed by the GitHub App. The format of the object uses
-# the permission name for the key (for example, issues) and the access type for
-# the value (for example, write).
-# Valid values are `read`, `write`, and `none`
 default_permissions:
   # Repository creation, deletion, settings, teams, and collaborators.
   # https://developer.github.com/v3/apps/permissions/#permission-on-administration
@@ -67,11 +68,7 @@ default_permissions:
 
   # Issues and related comments, assignees, labels, and milestones.
   # https://developer.github.com/v3/apps/permissions/#permission-on-issues
-  issues: write
-
-  # Search repositories, list collaborators, and access repository metadata.
-  # https://developer.github.com/v3/apps/permissions/#metadata-permissions
-  # metadata: read
+  # issues: read
 
   # Retrieve Pages statuses, configuration, and builds, as well as create new builds.
   # https://developer.github.com/v3/apps/permissions/#permission-on-pages
@@ -121,16 +118,9 @@ default_permissions:
   # https://developer.github.com/v3/apps/permissions/
   # organization_administration: read
 
-
-# The name of the GitHub App. Defaults to the name specified in package.json
-# name: My Probot App
-
-# The homepage of your GitHub App.
-# url: https://example.com/
-
-# A description of the GitHub App.
-# description: A description of my awesome app
+  # Search repositories, list collaborators, and access repository metadata.
+  # https://developer.github.com/v3/apps/permissions/#metadata-permissions
+  metadata: read
 
 # Set to true when your GitHub App is available to the public or false when it is only accessible to the owner of the app.
-# Default: true
-# public: false
+public: false
