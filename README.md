@@ -1,6 +1,6 @@
 # 🐙 Tako
 
-A GitHub App that provides an API to list the repositories it is installed on.
+A GitHub App that provides an API listing the repositories it is installed on.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
