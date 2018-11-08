@@ -15,7 +15,7 @@ const bearerToken = process.env.BEARER_TOKEN;
  * @param {import('express').NextFunction} next
  */
 const noCache = (req, res, next) => {
-	res.set("Cache-Control", "max-age=0");
+	res.set("Cache-Control", "max-age=0, no-cache");
 	next();
 };
 
@@ -45,7 +45,7 @@ const auth = (req, res, next) => {
  *
  * @param {import('probot').Application} app
  */
-const router = app => {
+const router = async app => {
 	const logger = app.log.child({ name: "api" });
 
 	// Get an express router from the Probot application instance
@@ -54,13 +54,13 @@ const router = app => {
 	// Responses could frequently change, so send a sensible cache-control header.
 	router.use(noCache);
 
-	logger.debug("registered the noCache middleware");
+	logger.debug("Registered the noCache middleware");
 
 	if (bearerToken) {
 		router.use(auth);
-		logger.debug("registered the auth middleware");
+		logger.debug("Registered the auth middleware");
 	} else {
-		logger.debug("skipped registered the auth middleware");
+		logger.debug("Skipped registered the auth middleware");
 	}
 
 	/**
@@ -68,7 +68,7 @@ const router = app => {
 	 *
 	 * While Tako is starting up, this endpoint will respond with a 404 status code.
 	 */
-	router.get("/__gtg", (req, res) => res.send(200, "OK"));
+	app.router.get("/__gtg", (req, res) => res.send(200, "OK"));
 
 	/**
 	 * Get yourself a list of repositories.
@@ -158,7 +158,7 @@ const router = app => {
 		}
 	};
 
-	logger.debug("registered the /tako router");
+	logger.info("Registered the /tako router");
 };
 
 module.exports = router;

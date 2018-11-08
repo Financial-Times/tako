@@ -1,37 +1,49 @@
 # 🐙 Tako
 
-A GitHub App that helps maintain a large number of repositories in a GitHub organisation.
+A GitHub App that provides an API to list the repositories it is installed on.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-## The API Schema
+FT.com shares the `Financial-Times` org with many other teams, containing over 2000 repositories.
 
-`GET /tako/repositories`
+We're using this to make a list of our teams ~200 repositories available for tooling and automation.
+
+## `GET /tako/repositories`
+
+Get a list of all the repositories.
 
 ```json
 {
   "repositories": [
     {
-      "name": "next-foo-bar"
+      "name": "foo-bar"
     },
     {
-      "name": "next-fizz-buzz"
+      "name": "fizz-buzz"
     }
   ]
 }
 ```
 
-`GET /tako/repositories/?topic=serverless`
+## `GET /tako/repositories/?topic=serverless`
+
+Get a list of repositories, filtered by a [topic](https://help.github.com/articles/about-topics/).
 
 ```json
 {
   "repositories": [
     {
-      "name": "next-foo-bar"
+      "name": "foo-bar"
     }
   ]
 }
 ```
+
+## Security
+
+You can secure the `/tako/repositories` endpoint by setting the `BEARER_TOKEN` environment variable.
+
+You must then send an `Authorization` header with a value of `Bearer <your-token>` in your requests.
 
 ## Development
 
@@ -58,7 +70,7 @@ npm run dev
 
 5. Probot will then automatically create you a `.env` file in your local working directory (you can add `LOG_LEVEL=trace` for more verbose logging)
 
-You're now good to go 🎉.
+You're now good to go 🎉. Check out <http://localhost:3000/tako/repositories>.
 
 ### Formatting and Code Quality
 
@@ -78,19 +90,14 @@ without the need for a plugin.
 
 > Prettier is an opinionated code formatter.
 
-The settings for `prettier` are defined in our [`.prettierrc.json`](.prettierrc.json)
-file. `prettier` also takes [specific settings](https://prettier.io/docs/en/api.html#prettierresolveconfigfilepath-options)
+We use the default settings for `prettier`, but it also takes [specific settings](https://prettier.io/docs/en/api.html#prettierresolveconfigfilepath-options)
 from our [`.editorconfig`](.editorconfig) file into account as well.
-
-Every time you run `git commit`, [`precise-commits`](https://www.npmjs.com/package/precise-commits)
-will run `prettier` against _only_ the specific changes you've made and fix any
-formatting issues. `precise-commits` is configured with [`husky`](https://www.npmjs.com/package/husky)
-as a [git pre-commit hook](https://git-scm.com/docs/githooks#_pre_commit) in our
-[package.json](package.json).
 
 If you'd like to use `prettier` in your editor there are [plugins available for most popular editors](https://prettier.io/docs/en/editors.html).
 
 There's an excellent explanation about how Prettier differs to a linter this [in the Prettier docs](https://prettier.io/docs/en/comparison.html).
+
+Format your code before committing with `npm run fmt`.
 
 #### [ESLint](https://www.npmjs.com/package/eslint)
 
@@ -100,7 +107,6 @@ The settings for `eslint` are defined in our [`.eslintrc.js`](.eslintrc.js) file
 
 We use the [`eslint-config-prettier`](https://www.npmjs.com/package/eslint-config-prettier)
 preset to disable any rules that conflict with formatting that is handled by
-`prettier`. If you add new rules in [`.eslintrc.js`](.eslintrc.js) you can run
-`npm run eslint-check` to check for any conflicting rules.
+`prettier`.
 
 If you'd like to use `eslint` in your editor there are [plugins available for most popular editors](https://eslint.org/docs/user-guide/integrations#editors/).
