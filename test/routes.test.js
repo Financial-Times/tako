@@ -118,7 +118,7 @@ describe("routes.js", () => {
 			});
 	});
 
-	test("/tako/repositories?topic=this-will-break responds with an error", async () => {
+	test("/tako/repositories?topic=fake-github-auth-erroring responds with an error", async () => {
 		app.auth = jest.fn().mockRejectedValue();
 
 		try {

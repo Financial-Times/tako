@@ -1,7 +1,7 @@
 /**
  * Usage as below.
  *
- * Required properties are id (number), name (string), and topics (an array).
+ * Required properties are id (number), name (string).
  *
  * ```
  * const repositoryStore = require('./repositories').instance;
