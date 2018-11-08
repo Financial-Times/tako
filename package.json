@@ -1,7 +1,7 @@
 {
   "name": "@financial-times/tako",
   "version": "1.0.0",
-  "description": "A GitHub App that provides an API to list the repositories it is installed on.",
+  "description": "A GitHub App that provides an API listing the repositories it is installed on.",
   "author": "The Financial Times Ltd.",
   "license": "MIT",
   "scripts": {
