@@ -1,8 +1,8 @@
 {
   "name": "@financial-times/tako",
   "version": "1.0.0",
-  "description": "A GitHub application that helps maintain a large number of repositories in a GitHub organisation.",
-  "author": "Braimbridge, Adam <adam@braimbridge.com> (https://github.com/adambraimbridge)",
+  "description": "A GitHub App that provides an API to list the repositories it is installed on.",
+  "author": "The Financial Times Ltd.",
   "license": "MIT",
   "scripts": {
     "dev": "nodemon --exec \"npm start\"",
