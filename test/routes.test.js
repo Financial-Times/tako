@@ -55,7 +55,7 @@ describe('routes.js', () => {
 			.expect(401);
 
 		await request(server)
-			.get('/tako/repositories/topic/expressjs')
+			.get('/tako/repositories?topic=express')
 			.set('Accept', 'application/json')
 			.expect(401);
 	});
@@ -68,7 +68,7 @@ describe('routes.js', () => {
 			.expect(200);
 
 		await request(server)
-			.get('/tako/repositories/topic/expressjs')
+			.get('/tako/repositories?topic=express')
 			.set('Accept', 'application/json')
 			.set('Authorization', 'Bearer hunter2')
 			.expect(200);
@@ -82,7 +82,7 @@ describe('routes.js', () => {
 			.expect('Cache-Control', 'max-age=0');
 
 		await request(server)
-			.get('/tako/repositories/topic/expressjs')
+			.get('/tako/repositories?topic=express')
 			.set('Accept', 'application/json')
 			.set('Authorization', 'Bearer hunter2')
 			.expect('Cache-Control', 'max-age=0');
@@ -103,9 +103,9 @@ describe('routes.js', () => {
 			});
 	});
 
-	test('/tako/repositories/topic/expressjs responds ok', async () => {
+	test('/tako/repositories?topic=express responds ok', async () => {
 		await request(server)
-			.get('/tako/repositories/topic/expressjs')
+			.get('/tako/repositories?topic=express')
 			.set('Accept', 'application/json')
 			.set('Authorization', 'Bearer hunter2')
 			.expect('Content-Type', 'application/json; charset=utf-8')
@@ -118,13 +118,17 @@ describe('routes.js', () => {
 			});
 	});
 
-	test('/tako/repositories/topic/this-will-break responds with an error', async () => {
+	test('/tako/repositories?topic=this-will-break responds with an error', async () => {
 		app.auth = jest.fn().mockRejectedValue();
 
-		await request(server)
-			.get('/tako/repositories/topic/this-will-break')
-			.set('Accept', 'application/json')
-			.set('Authorization', 'Bearer hunter2')
-			.expect(500);
+		try {
+			await request(server)
+				.get('/tako/repositories?topic=this-will-break')
+				.set('Accept', 'application/json')
+				.set('Authorization', 'Bearer hunter2')
+				.expect(500);
+		} catch (err) {
+			// We're looking for the 500 status code.
+		}
 	});
 });

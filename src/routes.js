@@ -71,9 +71,23 @@ const router = (app) => {
 	router.get('/__gtg', (req, res) => res.send(200, 'OK'));
 
 	/**
-	 * Get the full list of managed repositories.
+	 * Get yourself a list of repositories.
 	 */
-	router.get('/repositories', (req, res) => {
+	router.get('/repositories', async (req, res) => {
+		if (req.query.topic) {
+			await handleFiltered(req, res);
+		} else {
+			handleDefault(req, res);
+		}
+	});
+
+	/**
+	 * Handle the default route for /repositories.
+	 *
+	 * @param {import('express').Request} req
+	 * @param {import('express').Response} res
+	 */
+	const handleDefault = (req, res) => {
 		const repositories = Array.from(repositoryStore).map(
 			// eslint-disable-next-line no-unused-vars
 			([key, repository]) => ({
@@ -82,20 +96,21 @@ const router = (app) => {
 		);
 
 		res.send({ repositories });
-	});
+	}
 
 	/**
-	 * Get a list of managed repositories, filtered by topic.
+	 * Handle the route for /repositories, filtered by topic.
 	 *
 	 * We use the GitHub repository search to find all repositories by topic, then
 	 * filter out any that we don't manage.
 	 *
-	 * This is so that we don't
-	 *
 	 * @see https://octokit.github.io/rest.js/#api-Search-repos
 	 * @see https://developer.github.com/v3/search/#search-repositories
+	 *
+	 * @param {import('express').Request} req
+	 * @param {import('express').Response} res
 	 */
-	router.get('/repositories/topic/:topic', async (req, res) => {
+	const handleFiltered = async (req, res) => {
 		// Get our list of managed repositories.
 		const repositories = Array.from(repositoryStore).map(
 			// eslint-disable-next-line no-unused-vars
@@ -103,7 +118,7 @@ const router = (app) => {
 		);
 
 		// Pull out the topic to filter by.
-		const topic = req.params.topic;
+		const topic = req.query.topic;
 
 		logger.trace(`Searching by topic`, { topic });
 
@@ -133,17 +148,15 @@ const router = (app) => {
 			res.send({ repositories: filtered });
 		} catch (err) {
 			/**
-			 * Throwing an error leads to a 404 response in Probot, so we should
+			 * Throwing an error leads to a 404 response in Probot, so we need to
 			 * explicitly return a 500 status code if we encounter an error.
 			 */
 			res.sendStatus(500);
 
-			logger.error(err);
-
 			// Re-throw so that this bubbles into any other exception handling.
 			throw err;
 		}
-	});
+	}
 
 	logger.debug(`registered the /tako router`);
 };

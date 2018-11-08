@@ -21,7 +21,7 @@ A GitHub App that helps maintain a large number of repositories in a GitHub orga
 }
 ```
 
-`GET /tako/repositories/topic/serverless`
+`GET /tako/repositories/?topic=serverless`
 
 ```json
 {
