@@ -79,13 +79,13 @@ describe("routes.js", () => {
 			.get("/tako/repositories")
 			.set("Accept", "application/json")
 			.set("Authorization", "Bearer hunter2")
-			.expect("Cache-Control", "max-age=0");
+			.expect("Cache-Control", "max-age=0, no-cache");
 
 		await request(server)
 			.get("/tako/repositories?topic=express")
 			.set("Accept", "application/json")
 			.set("Authorization", "Bearer hunter2")
-			.expect("Cache-Control", "max-age=0");
+			.expect("Cache-Control", "max-age=0, no-cache");
 	});
 
 	test("/tako/repositories reponds ok", async () => {
