@@ -42,7 +42,7 @@ module.exports = async app => {
 		});
 	});
 
-	logger.debug(`Authenticated as a GitHub App`);
+	logger.debug("Authenticated as a GitHub App");
 
 	/**
 	 * Get every installation of the GitHub App. There should only be one.
@@ -56,7 +56,7 @@ module.exports = async app => {
 		throw new InitialisationError("Failed to get the installations", { err });
 	});
 
-	logger.debug(`Found the installations`, installations.data.map(i => i.id));
+	logger.debug("Found the installations", installations.data.map(i => i.id));
 
 	assert(
 		Array.isArray(installations.data) && installations.data.length === 1,
@@ -69,7 +69,7 @@ module.exports = async app => {
 	// https://developer.github.com/v3/apps/#response
 	const administratorAccount = (await octokit.apps.get()).data.owner.login;
 
-	logger.debug(`Comparing installation account to App owner`, {
+	logger.debug("Comparing installation account to App owner", {
 		installation: installationAccount,
 		owner: administratorAccount
 	});
@@ -114,7 +114,7 @@ module.exports = async app => {
 		});
 	} catch (err) {
 		throw new InitialisationError(
-			`Failed to fetch repository information with apps.getInstallationRepositories`,
+			"Failed to fetch repository information with apps.getInstallationRepositories",
 			{ err }
 		);
 	}

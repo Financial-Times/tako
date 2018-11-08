@@ -54,13 +54,13 @@ const router = app => {
 	// Responses could frequently change, so send a sensible cache-control header.
 	router.use(noCache);
 
-	logger.debug(`registered the noCache middleware`);
+	logger.debug("registered the noCache middleware");
 
 	if (bearerToken) {
 		router.use(auth);
-		logger.debug(`registered the auth middleware`);
+		logger.debug("registered the auth middleware");
 	} else {
-		logger.debug(`skipped registered the auth middleware`);
+		logger.debug("skipped registered the auth middleware");
 	}
 
 	/**
@@ -120,7 +120,7 @@ const router = app => {
 		// Pull out the topic to filter by.
 		const topic = req.query.topic;
 
-		logger.trace(`Searching by topic`, { topic });
+		logger.trace("Searching by topic", { topic });
 
 		try {
 			// Get a GitHub App authenticated instance of octokit.
@@ -143,7 +143,7 @@ const router = app => {
 				.filter(r => results.includes(r.id))
 				.map(({ name }) => ({ name }));
 
-			logger.trace(`Search results after filtering`, { filtered });
+			logger.trace("Search results after filtering", { filtered });
 
 			res.send({ repositories: filtered });
 		} catch (err) {
@@ -158,7 +158,7 @@ const router = app => {
 		}
 	};
 
-	logger.debug(`registered the /tako router`);
+	logger.debug("registered the /tako router");
 };
 
 module.exports = router;
