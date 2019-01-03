@@ -10,7 +10,7 @@
     "lint": "eslint src/ test/",
     "test": "npm run lint && npm run unit-test",
     "unit-test": "jest",
-    "fmt": "prettier --write '**/*.{js,json,yml,yaml,md}' '!test-results/**'"
+    "format": "prettier --write '**/*.{js,json,yml,yaml,md}' '!test-results/**'"
   },
   "dependencies": {
     "probot": "7.4.0"
