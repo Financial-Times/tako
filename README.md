@@ -4,9 +4,9 @@ A GitHub App that provides an API listing the repositories it is installed on.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-FT.com shares the `Financial-Times` org with many other teams, containing over 2000 repositories.
+FT.com shares the `Financial-Times` GitHub organisation with many other teams, containing over two thousand repositories.
 
-We're using this to make a list of our teams ~200 repositories available for tooling and automation.
+We use Tako to make a canonical list of the FT.com team's two hundred or so repositories. This list is available via an API for tooling and automation.
 
 ## `GET /tako/repositories`
 
@@ -97,7 +97,7 @@ If you'd like to use `prettier` in your editor there are [plugins available for 
 
 There's an excellent explanation about how Prettier differs to a linter this [in the Prettier docs](https://prettier.io/docs/en/comparison.html).
 
-Format your code before committing with `npm run fmt`.
+Format your code before committing with `npm run format`.
 
 #### [ESLint](https://www.npmjs.com/package/eslint)
 
