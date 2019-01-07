@@ -32,13 +32,18 @@ module.exports = async app => {
 		const added = context.payload.repositories_added;
 
 		added.forEach(async repository => {
-			// Save this new repository.
-			repositoryStore.set(repository.id, {
-				id: repository.id,
-				name: repository.name
-			});
+			if (repository.archived) {
+				context.log.info(`Excluded repository ${repository.full_name} because it is archived.`);
+			}
+			else {
+				// Save this new repository.
+				repositoryStore.set(repository.id, {
+					id: repository.id,
+					name: repository.name
+				});
 
-			context.log.info(`Added repository ${repository.full_name}`);
+				context.log.info(`Added repository ${repository.full_name}`);
+			}
 		});
 	});
 
@@ -50,7 +55,7 @@ module.exports = async app => {
 		const removed = context.payload.repositories_removed;
 
 		removed.forEach(repository => {
-			// Remove the repository by it's ID.
+			// Remove the repository by its ID.
 			repositoryStore.delete(repository.id);
 
 			context.log.info(`Removed repository ${repository.full_name}`);

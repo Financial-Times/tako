@@ -53,6 +53,12 @@ describe("index.js", () => {
 		expect(repositoryStore.size).toEqual(3);
 	});
 
+	test("installation_repositories.added_selected (adding an archived repository)", async () => {
+		await app.receive(fixture("installation_repositories.added_selected_archived"));
+
+		expect(repositoryStore.size).toEqual(2);
+	});
+
 	test("installation_repositories.removed", async () => {
 		const event = fixture("installation_repositories.removed");
 

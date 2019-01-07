@@ -109,8 +109,13 @@ module.exports = async app => {
 		);
 
 		// Save each repository to our global map of repositories.
-		repositories.forEach(({ id, name }) => {
-			repositoryStore.set(id, { id, name });
+		repositories.forEach(({ id, name, archived }) => {
+			if (archived) {
+				logger.info(`Excluding ${name} (because it is )archived.`);
+			}
+			else {
+				repositoryStore.set(id, { id, name });
+			}
 		});
 	} catch (err) {
 		throw new InitialisationError(

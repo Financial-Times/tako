@@ -26,7 +26,10 @@ describe("initalise.js", () => {
 					data: { owner: { login: "Financial-Times" } }
 				}),
 				getInstallationRepositories: jest.fn().mockResolvedValue({
-					data: { repositories: [{ id: 12345, name: "foo-bar" }] }
+					data: { repositories: [
+						{ id: 12345, name: "foo-bar" },
+						{ id: 23456, name: "foo-bar-archived", archived: true },
+					] }
 				})
 			},
 			// Assuming we're not going to paginate in these tests.
@@ -39,7 +42,7 @@ describe("initalise.js", () => {
 		app.auth = jest.fn().mockResolvedValue(github);
 	});
 
-	test("loads all installed repositories", async () => {
+	test("loads all installed repositories (excluding any archived repositories)", async () => {
 		await initialise(app);
 
 		expect(repositoryStore.size).toBe(1);
