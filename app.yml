@@ -124,3 +124,5 @@ default_permissions:
 
 # Set to true when your GitHub App is available to the public or false when it is only accessible to the owner of the app.
 public: false
+
+url: https://github.com/Financial-Times/tako
