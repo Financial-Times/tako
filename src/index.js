@@ -1,59 +1,38 @@
 const routes = require("./routes");
 const initialise = require("./initialise");
-const repositoryStore = require("./repositories").instance;
+const repositories = require("./repositories");
 
 /**
  * @param {import('probot').Application} app - Probot's Application class.
  */
 module.exports = async app => {
-	// Ensure that we crash Probot if we are unable to initialise.
-	try {
-		await initialise(app);
-	} catch (err) {
-		app.log.fatal("Failed to initialise", err);
-		process.exit(1);
-	}
-
-	// And the same goes for loading our API routes.
+	// Ensure that we crash if there's any error loading our API routes.
 	try {
 		await routes(app);
-	} catch (err) {
+	}
+	catch (err) {
 		app.log.fatal("Failed to load API routes", err);
 		process.exit(1);
 	}
 
-	// See https://developer.github.com/webhooks/#events for a list of all GitHub webhook events.
-
-	/**
-	 * Add new repositories to the API.
-	 */
-	app.on("installation_repositories.added", async context => {
-		// Pull out the list of added repositories.
-		const added = context.payload.repositories_added;
-
-		added.forEach(async repository => {
-			// Save this new repository.
-			repositoryStore.set(repository.id, {
-				id: repository.id,
-				name: repository.name
-			});
-
-			context.log.info(`Added repository ${repository.full_name}`);
-		});
+	// Ensure that we crash Probot if we are unable to initialise.
+	const installation = await initialise(app).catch(err => {
+		app.log.fatal("Failed to initialise", err);
+		process.exit(1);
 	});
 
+	async function refresh(context) {
+		await repositories.refresh(installation).catch(err => {
+			app.log.error("Failed to refresh Repository Store", { err, context });
+		})
+		app.log.info(`Refreshed the repository store. Action: ${context.payload.action || 'Unknown'}`);
+	}
+
 	/**
-	 * Remove untracked repositories from the API.
+	 * On appropriate events, refresh the whole list of Tako repositories.
+	 * @see https://developer.github.com/webhooks/#events for a list of all GitHub webhook events.
 	 */
-	app.on("installation_repositories.removed", async context => {
-		// Pull out the list of removed repositories.
-		const removed = context.payload.repositories_removed;
-
-		removed.forEach(repository => {
-			// Remove the repository by it's ID.
-			repositoryStore.delete(repository.id);
-
-			context.log.info(`Removed repository ${repository.full_name}`);
-		});
-	});
+	app.on("installation_repositories.added", refresh);
+	app.on("installation_repositories.removed", refresh);
+	// TODO: Handle appropriate "archived" events
 };

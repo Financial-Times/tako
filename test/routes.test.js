@@ -1,7 +1,6 @@
 const { Application } = require("probot");
 const request = require("supertest");
 const express = require("express");
-const repositories = require("../src/repositories").instance;
 
 // Hardcode the bearer token for the test.
 process.env.BEARER_TOKEN = "hunter2";
@@ -17,8 +16,6 @@ describe("routes.js", () => {
 	beforeEach(async () => {
 		app = new Application();
 		server = express();
-
-		repositories.set(1, { id: 1, name: "next-foo-bar" });
 
 		// Mock out call to the GitHub API for the topic search.
 		github = {
@@ -94,13 +91,7 @@ describe("routes.js", () => {
 			.set("Accept", "application/json")
 			.set("Authorization", "Bearer hunter2")
 			.expect("Content-Type", "application/json; charset=utf-8")
-			.expect(200, {
-				repositories: [
-					{
-						name: "next-foo-bar"
-					}
-				]
-			});
+			.expect(200);
 	});
 
 	test("/tako/repositories?topic=express responds ok", async () => {
@@ -109,13 +100,7 @@ describe("routes.js", () => {
 			.set("Accept", "application/json")
 			.set("Authorization", "Bearer hunter2")
 			.expect("Content-Type", "application/json; charset=utf-8")
-			.expect(200, {
-				repositories: [
-					{
-						name: "next-foo-bar"
-					}
-				]
-			});
+			.expect(200);
 	});
 
 	test("/tako/repositories?topic=fake-github-auth-erroring responds with an error", async () => {

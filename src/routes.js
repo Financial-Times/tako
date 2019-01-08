@@ -1,4 +1,4 @@
-const repositoryStore = require("./repositories").instance;
+const repositories = require("./repositories");
 
 /**
  * Secure the endpoint using the `Authorization` header and a bearer token.
@@ -88,14 +88,14 @@ const router = async app => {
 	 * @param {import('express').Response} res
 	 */
 	const handleDefault = (req, res) => {
-		const repositories = Array.from(repositoryStore).map(
+		const repositoryList = Array.from(repositories.list).map(
 			// eslint-disable-next-line no-unused-vars
 			([key, repository]) => ({
 				name: repository.name
 			})
 		);
 
-		res.send({ repositories });
+		res.send({ repositories: repositoryList });
 	};
 
 	/**
@@ -112,7 +112,7 @@ const router = async app => {
 	 */
 	const handleFiltered = async (req, res) => {
 		// Get our list of managed repositories.
-		const repositories = Array.from(repositoryStore).map(
+		const repositoryList = Array.from(repositories.list).map(
 			// eslint-disable-next-line no-unused-vars
 			([key, { id, name }]) => ({ id, name })
 		);
@@ -139,7 +139,7 @@ const router = async app => {
 			);
 
 			// Filter out any repository that we don't manage, and map to just the name property.
-			const filtered = repositories
+			const filtered = repositoryList
 				.filter(r => results.includes(r.id))
 				.map(({ name }) => ({ name }));
 

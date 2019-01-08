@@ -1,5 +1,5 @@
 const { Application } = require("probot");
-const repositoryStore = require("../src/repositories").instance;
+const repositories = require("../src/repositories");
 const { AssertionError } = require("assert");
 
 // Requiring our app implementation.
@@ -42,7 +42,7 @@ describe("initalise.js", () => {
 	test("loads all installed repositories", async () => {
 		await initialise(app);
 
-		expect(repositoryStore.size).toBe(1);
+		expect(repositories.list.size).toBe(1);
 	});
 
 	test("throws an AssertionError on miss-matched GitHub App owner and installation owner", async () => {

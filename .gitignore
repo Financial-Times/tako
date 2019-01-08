@@ -80,3 +80,6 @@ typings/
 
 # FuseBox cache
 .fusebox/
+
+# OSX
+.DS_Store
