@@ -104,7 +104,8 @@ module.exports = async app => {
 	logger.debug(`Authenticated as installation ${installationId}`);
 
 	try {
-		await repositories.refresh(installation);
+		const repositoryCount = await repositories.refresh(installation);
+		logger.info(`Refreshed the repository store. Total: ${repositoryCount}`);
 		return installation;
 	}
 	catch (err) {

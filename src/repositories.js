@@ -19,6 +19,8 @@ async function refresh(installation) {
 		repositoryStore = repositories
 			.filter(({ archived }) => !archived)
 			.map(({name}) => ({name}));
+
+		return repositoryStore.length;
 	}
 	catch (err) {
 		throw new Error(

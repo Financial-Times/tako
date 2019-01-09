@@ -22,10 +22,8 @@ module.exports = async app => {
 	});
 
 	async function refresh(context) {
-		await repositories.refresh(installation).catch(err => {
-			app.log.error("Failed to refresh Repository Store", { err, context });
-		})
-		app.log.info(`Refreshed the repository store. Action: ${context.payload.action || 'Unknown'}`);
+		const repositoryCount = await repositories.refresh(installation);
+		app.log.info(`Refreshed the repository store. Total: ${repositoryCount}. Action: ${context.payload.action || 'Unknown'}`);
 	}
 
 	/**
