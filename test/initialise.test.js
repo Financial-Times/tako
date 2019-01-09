@@ -26,7 +26,10 @@ describe("initalise.js", () => {
 					data: { owner: { login: "Financial-Times" } }
 				}),
 				getInstallationRepositories: jest.fn().mockResolvedValue({
-					data: { repositories: [{ id: 12345, name: "foo-bar" }] }
+					data: { repositories: [
+						{ id: 12345, name: "foo-bar" },
+						{ id: 23456, name: "archived-aardvark", archived: true },
+					] }
 				})
 			},
 			// Assuming we're not going to paginate in these tests.
@@ -35,14 +38,14 @@ describe("initalise.js", () => {
 			}
 		};
 
-		// Passes the mocked out GitHub API into out app instance.
+		// Passes the mocked out GitHub API into our app instance.
 		app.auth = jest.fn().mockResolvedValue(github);
 	});
 
 	test("loads all installed repositories", async () => {
 		await initialise(app);
 
-		expect(repositories.list.size).toBe(1);
+		expect(repositories.list().length).toBe(1);
 	});
 
 	test("throws an AssertionError on miss-matched GitHub App owner and installation owner", async () => {

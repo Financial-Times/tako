@@ -1,7 +1,7 @@
 /**
- * @constant repositoryStore - A global map of repositories that are assocated with the Tako GitHub App installation.
+ * @constant repositoryStore - An array of repositories that are assocated with the Tako GitHub App installation.
  */
-const repositoryStore = new Map();
+let repositoryStore = new Array();
 
 /**
  * Refresh the Repository Store with data fetched from the Tako GitHub App installation
@@ -15,12 +15,10 @@ async function refresh(installation) {
 			res => res.data.repositories // Pull out only the list of repositories from each response.
 		);
 
-		// Save each repository to the Repository Store — unless it's archived.
-		repositories.forEach(({ id, name, archived }) => {
-			if (!archived) {
-				repositoryStore.set(id, { id, name });
-			}
-		});
+		// Refresh the Repository Store — filtering out archived repositories.
+		repositoryStore = repositories
+			.filter(({ archived }) => !archived)
+			.map(({name}) => ({name}));
 	}
 	catch (err) {
 		throw new Error(
@@ -33,5 +31,5 @@ async function refresh(installation) {
 
 module.exports = {
 	refresh: refresh,
-	list: repositoryStore
+	list: () => repositoryStore
 };

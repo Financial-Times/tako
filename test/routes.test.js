@@ -35,7 +35,7 @@ describe("routes.js", () => {
 			}
 		};
 
-		// Passes the mocked out GitHub API into out app instance.
+		// Passes the mocked out GitHub API into our app instance.
 		app.auth = () => Promise.resolve(github);
 
 		// Register our routes with the empty application.

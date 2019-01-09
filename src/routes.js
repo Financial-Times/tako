@@ -88,14 +88,7 @@ const router = async app => {
 	 * @param {import('express').Response} res
 	 */
 	const handleDefault = (req, res) => {
-		const repositoryList = Array.from(repositories.list).map(
-			// eslint-disable-next-line no-unused-vars
-			([key, repository]) => ({
-				name: repository.name
-			})
-		);
-
-		res.send({ repositories: repositoryList });
+		res.send({ repositories: repositories.list() });
 	};
 
 	/**
@@ -111,11 +104,6 @@ const router = async app => {
 	 * @param {import('express').Response} res
 	 */
 	const handleFiltered = async (req, res) => {
-		// Get our list of managed repositories.
-		const repositoryList = Array.from(repositories.list).map(
-			// eslint-disable-next-line no-unused-vars
-			([key, { id, name }]) => ({ id, name })
-		);
 
 		// Pull out the topic to filter by.
 		const topic = req.query.topic;
@@ -139,9 +127,8 @@ const router = async app => {
 			);
 
 			// Filter out any repository that we don't manage, and map to just the name property.
-			const filtered = repositoryList
+			const filtered = repositories.list()
 				.filter(r => results.includes(r.id))
-				.map(({ name }) => ({ name }));
 
 			logger.trace("Search results after filtering", { filtered });
 
