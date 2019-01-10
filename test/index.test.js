@@ -20,7 +20,7 @@ describe("index.js", () => {
 	app.auth = jest.fn().mockResolvedValue(githubMock);
 
 	beforeEach(() => {
-		repositories.refresh.mockClear()
+		repositories.refresh.mockClear();
 	});
 
 	test("installation_repositories.added", async () => {

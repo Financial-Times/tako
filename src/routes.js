@@ -74,11 +74,13 @@ const router = async app => {
 	 * Get yourself a list of repositories.
 	 */
 	router.get("/repositories", async (req, res) => {
-		let repositoryList = repositories.list().map(({name, topics}) => ({name, topics}));
+		let repositoryList = repositories
+			.list()
+			.map(({ name, topics }) => ({ name, topics }));
 		if (req.query.topic) {
 			repositoryList = repositoryList.filter(repository => {
-				return repository.topics.includes(req.query.topic)
-			})
+				return repository.topics.includes(req.query.topic);
+			});
 		}
 		res.send({ repositories: repositoryList });
 	});

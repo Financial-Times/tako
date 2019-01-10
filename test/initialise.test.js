@@ -22,7 +22,11 @@ describe("initalise.js", () => {
 		expect(repositories.list().length).toBe(3);
 
 		// We want to ensure every repository has a topic property.
-		expect(repositories.list().map(({ topics }) => topics)).toEqual([["aaa", "bbb"], [], []]);
+		expect(repositories.list().map(({ topics }) => topics)).toEqual([
+			["aaa", "bbb"],
+			[],
+			[]
+		]);
 	});
 
 	test("throws an AssertionError on miss-matched GitHub App owner and installation owner", async () => {

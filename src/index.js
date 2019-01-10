@@ -9,8 +9,7 @@ module.exports = async app => {
 	// Ensure that we crash if there's any error loading our API routes.
 	try {
 		await routes(app);
-	}
-	catch (err) {
+	} catch (err) {
 		app.log.fatal("Failed to load API routes", err);
 		process.exit(1);
 	}
@@ -23,7 +22,10 @@ module.exports = async app => {
 
 	async function refresh(context) {
 		const repositoryCount = await repositories.refresh(installation);
-		app.log.info(`Refreshed the repository store. Total: ${repositoryCount}. Action: ${context.payload.action || 'Unknown'}`);
+		app.log.info(
+			`Refreshed the repository store. Total: ${repositoryCount}. Action: ${context
+				.payload.action || "Unknown"}`
+		);
 	}
 
 	/**
