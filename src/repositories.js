@@ -5,13 +5,13 @@ let repositoryStore = new Array();
 
 /**
  * Refresh the Repository Store with data fetched from the Tako GitHub App installation
- * @see https://octokit.github.io/rest.js/#api-Apps-getInstallationRepositories
+ * @see https://octokit.github.io/rest.js/#api-Apps-listRepos
  * @param {import('probot').GitHubAPI} installation - The Tako GitHub App installation
  */
 async function refresh(installation) {
 	try {
 		const repositories = await installation.paginate(
-			installation.apps.getInstallationRepositories({ per_page: 100 }),
+			installation.apps.listRepos({ per_page: 100 }),
 			res => res.data.repositories // Pull out only the list of repositories from each response.
 		);
 
@@ -24,7 +24,7 @@ async function refresh(installation) {
 	}
 	catch (err) {
 		throw new Error(
-			"Failed to fetch repository information with apps.getInstallationRepositories", {
+			"Failed to fetch repository information with apps.listRepos", {
 				err
 			}
 		);

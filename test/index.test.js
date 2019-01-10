@@ -28,7 +28,7 @@ describe("index.js", () => {
 			get: jest.fn().mockResolvedValue({
 				data: { owner: { login: "Financial-Times" } }
 			}),
-			getInstallationRepositories: jest.fn().mockResolvedValue({
+			listRepos: jest.fn().mockResolvedValue({
 				data: { repositories: [
 					{ id: 12345, name: "foo-bar" },
 					{ id: 23456, name: "archived-aardvark", archived: true },
