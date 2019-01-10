@@ -8,10 +8,10 @@ let repositoryStore = new Array();
  * @see https://octokit.github.io/rest.js/#api-Apps-listRepos
  * @param {import('probot').GitHubAPI} installation - The Tako GitHub App installation
  */
-async function refresh(installation) {
+async function refresh(octokit) {
 	try {
-		const repositories = await installation.paginate(
-			installation.apps.listRepos({ per_page: 100 }),
+		const repositories = await octokit.paginate(
+			octokit.apps.listRepos({ per_page: 100 }),
 			res => res.data.repositories // Pull out only the list of repositories from each response.
 		);
 
