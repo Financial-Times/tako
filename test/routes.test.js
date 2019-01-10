@@ -20,7 +20,7 @@ describe("routes.js", () => {
 		// Mock out call to the GitHub API for the topic search.
 		github = {
 			apps: {
-				get: jest.fn().mockResolvedValue({
+				getAuthenticated: jest.fn().mockResolvedValue({
 					data: { owner: { login: "umbrella-corp" } }
 				})
 			},

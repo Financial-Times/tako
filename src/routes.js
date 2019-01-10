@@ -74,76 +74,14 @@ const router = async app => {
 	 * Get yourself a list of repositories.
 	 */
 	router.get("/repositories", async (req, res) => {
+		let repositoryList = repositories.list().map(({name, topics}) => ({name, topics}));
 		if (req.query.topic) {
-			await handleFiltered(req, res);
-		} else {
-			handleDefault(req, res);
+			repositoryList = repositoryList.filter(repository => {
+				return repository.topics.includes(req.query.topic)
+			})
 		}
+		res.send({ repositories: repositoryList });
 	});
-
-	/**
-	 * Handle the default route for /repositories.
-	 *
-	 * @param {import('express').Request} req
-	 * @param {import('express').Response} res
-	 */
-	const handleDefault = (req, res) => {
-		res.send({ repositories: repositories.list() });
-	};
-
-	/**
-	 * Handle the route for /repositories, filtered by topic.
-	 *
-	 * We use the GitHub repository search to find all repositories by topic, then
-	 * filter out any that we don't manage.
-	 *
-	 * @see https://octokit.github.io/rest.js/#api-Search-repos
-	 * @see https://developer.github.com/v3/search/#search-repositories
-	 *
-	 * @param {import('express').Request} req
-	 * @param {import('express').Response} res
-	 */
-	const handleFiltered = async (req, res) => {
-
-		// Pull out the topic to filter by.
-		const topic = req.query.topic;
-
-		logger.trace("Searching by topic", { topic });
-
-		try {
-			// Get a GitHub App authenticated instance of octokit.
-			const octokit = await app.auth();
-
-			/**
-			 * We should be an internal GitHub App, so we can limit our search
-			 * to the org that we are owned by.
-			 */
-			const org = (await octokit.apps.getAuthenticated()).data.owner.login;
-
-			// Search for all repositories in our org, by topic.
-			const results = await octokit.paginate(
-				octokit.search.repos({ q: `org:${org} topic:${topic}`, per_page: 100 }),
-				res => res.data.items.map(item => item.id) // Pull out only the repository ID from the results.
-			);
-
-			// Filter out any repository that we don't manage, and map to just the name property.
-			const filtered = repositories.list()
-				.filter(r => results.includes(r.id))
-
-			logger.trace("Search results after filtering", { filtered });
-
-			res.send({ repositories: filtered });
-		} catch (err) {
-			/**
-			 * Throwing an error leads to a 404 response in Probot, so we need to
-			 * explicitly return a 500 status code if we encounter an error.
-			 */
-			res.sendStatus(500);
-
-			// Re-throw so that this bubbles into any other exception handling.
-			throw err;
-		}
-	};
 
 	logger.info("Registered the /tako router");
 };
