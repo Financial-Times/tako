@@ -69,7 +69,7 @@ module.exports = async app => {
 	const installationAccount = installations.data[0].account.login;
 
 	// https://developer.github.com/v3/apps/#response
-	const administratorAccount = (await octokit.apps.get()).data.owner.login;
+	const administratorAccount = (await octokit.apps.getAuthenticated()).data.owner.login;
 
 	logger.debug("Comparing installation account to App owner", {
 		installation: installationAccount,

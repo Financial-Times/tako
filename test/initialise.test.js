@@ -22,7 +22,7 @@ describe("initalise.js", () => {
 					// The installation id.
 					data: [{ id: 1, account: { login: "Financial-Times" } }]
 				}),
-				get: jest.fn().mockResolvedValue({
+				getAuthenticated: jest.fn().mockResolvedValue({
 					data: { owner: { login: "Financial-Times" } }
 				}),
 				listRepos: jest.fn().mockResolvedValue({
@@ -49,7 +49,7 @@ describe("initalise.js", () => {
 	});
 
 	test("throws an AssertionError on miss-matched GitHub App owner and installation owner", async () => {
-		github.apps.get = jest.fn().mockResolvedValue({
+		github.apps.getAuthenticated = jest.fn().mockResolvedValue({
 			data: { owner: { login: "umbrella-corp" } }
 		});
 
@@ -80,9 +80,9 @@ describe("initalise.js", () => {
 		return expect(initialise(app)).rejects.toBeInstanceOf(Error);
 	});
 
-	test("throws when the apps.get() call fails", async () => {
+	test("throws when the apps.getAuthenticated() call fails", async () => {
 		github.apps = {
-			get: jest.fn().mockRejectedValue()
+			getAuthenticated: jest.fn().mockRejectedValue()
 		};
 
 		return expect(initialise(app)).rejects.toBeInstanceOf(Error);

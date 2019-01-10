@@ -118,7 +118,7 @@ const router = async app => {
 			 * We should be an internal GitHub App, so we can limit our search
 			 * to the org that we are owned by.
 			 */
-			const org = (await octokit.apps.get()).data.owner.login;
+			const org = (await octokit.apps.getAuthenticated()).data.owner.login;
 
 			// Search for all repositories in our org, by topic.
 			const results = await octokit.paginate(
