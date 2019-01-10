@@ -50,9 +50,9 @@ module.exports = async app => {
 	 * Tako should be a private (also know as internal) GitHub App, installed on the same account it is administered by.
 	 *
 	 * @see https://developer.github.com/apps/managing-github-apps/making-a-github-app-public-or-private/#private-installation-flow
-	 * @see https://octokit.github.io/rest.js/#api-Apps-getInstallations
+	 * @see https://octokit.github.io/rest.js/#api-Apps-listInstallations
 	 */
-	const installations = await octokit.apps.getInstallations().catch(err => {
+	const installations = await octokit.apps.listInstallations().catch(err => {
 		throw new InitialisationError("Failed to get the installations", {
 			err
 		});

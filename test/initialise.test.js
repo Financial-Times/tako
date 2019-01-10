@@ -18,7 +18,7 @@ describe("initalise.js", () => {
 				getTopics: jest.fn().mockResolvedValue({ names: ["foo-bar"] })
 			},
 			apps: {
-				getInstallations: jest.fn().mockResolvedValue({
+				listInstallations: jest.fn().mockResolvedValue({
 					// The installation id.
 					data: [{ id: 1, account: { login: "Financial-Times" } }]
 				}),
@@ -72,9 +72,9 @@ describe("initalise.js", () => {
 		return expect(initialise(app)).rejects.toBeInstanceOf(Error);
 	});
 
-	test("throws when the apps.getInstallations() call fails", async () => {
+	test("throws when the apps.listInstallations() call fails", async () => {
 		github.apps = {
-			getInstallations: jest.fn().mockRejectedValue()
+			listInstallations: jest.fn().mockRejectedValue()
 		};
 
 		return expect(initialise(app)).rejects.toBeInstanceOf(Error);

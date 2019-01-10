@@ -21,7 +21,7 @@ describe("index.js", () => {
 			getTopics: jest.fn().mockResolvedValue({ names: ["foo-bar"] })
 		},
 		apps: {
-			getInstallations: jest.fn().mockResolvedValue({
+			listInstallations: jest.fn().mockResolvedValue({
 				// The installation id.
 				data: [{ id: 1, account: { login: "Financial-Times" } }]
 			}),
