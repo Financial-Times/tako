@@ -18,7 +18,7 @@ async function refresh(installation) {
 		// Refresh the Repository Store — filtering out archived repositories.
 		repositoryStore = repositories
 			.filter(({ archived }) => !archived)
-			.map(({name}) => ({name}));
+			.map(({id, name}) => ({id, name}));
 
 		return repositoryStore.length;
 	}
