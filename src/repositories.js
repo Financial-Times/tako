@@ -11,14 +11,19 @@ let repositoryStore = new Array();
 async function refresh(octokit) {
 	try {
 		const repositories = await octokit.paginate(
-			octokit.apps.listRepos({ per_page: 100 }),
+			octokit.apps.listRepos({
+				per_page: 100,
+				headers: {
+					accept: 'application/vnd.github.machine-man-preview+json,application/vnd.github.mercy-preview+json'
+				}
+			}),
 			res => res.data.repositories // Pull out only the list of repositories from each response.
 		);
 
 		// Refresh the Repository Store — filtering out archived repositories.
 		repositoryStore = repositories
 			.filter(({ archived }) => !archived)
-			.map(({id, name}) => ({id, name}));
+			.map(({id, name, topics}) => ({id, name, topics}));
 
 		return repositoryStore.length;
 	}
