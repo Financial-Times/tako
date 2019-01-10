@@ -132,9 +132,17 @@ const router = async app => {
 			 */
 			const org = (await octokit.apps.get()).data.owner.login;
 
+			const searchQuery = {
+				q: `org:${org} topic:${topic}`,
+				per_page: 100,
+				headers: {
+					accept: 'application/vnd.github.mercy-preview+json'
+				}
+			};
+
 			// Search for all repositories in our org, by topic.
 			const results = await octokit.paginate(
-				octokit.search.repos({ q: `org:${org} topic:${topic}`, per_page: 100 }),
+				octokit.search.repos(searchQuery),
 				res => res.data.items.map(item => item.id) // Pull out only the repository ID from the results.
 			);
 
