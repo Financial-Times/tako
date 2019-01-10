@@ -1,4 +1,5 @@
 const { Application } = require("probot");
+const githubMock = require("./github-mock.js");
 const repositories = require("../src/repositories");
 const { AssertionError } = require("assert");
 
@@ -7,39 +8,12 @@ const initialise = require("../src/initialise");
 
 describe("initalise.js", () => {
 	let app;
-	let github;
 
 	beforeEach(() => {
 		app = new Application();
 
-		// This is an easy way to mock out the GitHub API
-		github = {
-			repos: {
-				getTopics: jest.fn().mockResolvedValue({ names: ["foo-bar"] })
-			},
-			apps: {
-				listInstallations: jest.fn().mockResolvedValue({
-					// The installation id.
-					data: [{ id: 1, account: { login: "Financial-Times" } }]
-				}),
-				getAuthenticated: jest.fn().mockResolvedValue({
-					data: { owner: { login: "Financial-Times" } }
-				}),
-				listRepos: jest.fn().mockResolvedValue({
-					data: { repositories: [
-						{ id: 12345, name: "foo-bar" },
-						{ id: 23456, name: "archived-aardvark", archived: true },
-					] }
-				})
-			},
-			// Assuming we're not going to paginate in these tests.
-			paginate: async (octokitCall, process) => {
-				return Promise.resolve(process(await octokitCall));
-			}
-		};
-
 		// Passes the mocked out GitHub API into our app instance.
-		app.auth = jest.fn().mockResolvedValue(github);
+		app.auth = jest.fn().mockResolvedValue(githubMock);
 	});
 
 	test("loads all installed repositories", async () => {
@@ -49,7 +23,7 @@ describe("initalise.js", () => {
 	});
 
 	test("throws an AssertionError on miss-matched GitHub App owner and installation owner", async () => {
-		github.apps.getAuthenticated = jest.fn().mockResolvedValue({
+		githubMock.apps.getAuthenticated = jest.fn().mockResolvedValue({
 			data: { owner: { login: "umbrella-corp" } }
 		});
 
@@ -66,14 +40,14 @@ describe("initalise.js", () => {
 		// Fail the second call to app.auth.
 		app.auth = jest
 			.fn()
-			.mockResolvedValueOnce(github)
+			.mockResolvedValueOnce()
 			.mockRejectedValue();
 
 		return expect(initialise(app)).rejects.toBeInstanceOf(Error);
 	});
 
 	test("throws when the apps.listInstallations() call fails", async () => {
-		github.apps = {
+		githubMock.apps = {
 			listInstallations: jest.fn().mockRejectedValue()
 		};
 
@@ -81,7 +55,7 @@ describe("initalise.js", () => {
 	});
 
 	test("throws when the apps.getAuthenticated() call fails", async () => {
-		github.apps = {
+		githubMock.apps = {
 			getAuthenticated: jest.fn().mockRejectedValue()
 		};
 
@@ -89,7 +63,7 @@ describe("initalise.js", () => {
 	});
 
 	test("throws when the apps.listRepos() call fails", async () => {
-		github.apps = {
+		githubMock.apps = {
 			listRepos: jest.fn().mockRejectedValue()
 		};
 

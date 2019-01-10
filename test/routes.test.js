@@ -24,11 +24,6 @@ describe("routes.js", () => {
 					data: { owner: { login: "umbrella-corp" } }
 				})
 			},
-			search: {
-				repos: jest.fn().mockResolvedValue({
-					data: { items: [{ id: 1 }] }
-				})
-			},
 			// Assuming we're not going to paginate in these tests.
 			paginate: async (octokitCall, process) => {
 				return Promise.resolve(process(await octokitCall));
