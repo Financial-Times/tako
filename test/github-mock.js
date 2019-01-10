@@ -13,7 +13,9 @@ module.exports = {
 		listRepos: jest.fn().mockResolvedValue({
 			data: { repositories: [
 				{ id: 12345, name: "foo-bar", topics: ['aaa', 'bbb'] },
-				{ id: 23456, name: "archived-aardvark", archived: true },
+				{ id: 12346, name: "foo-bar", topics: [] },
+				{ id: 12347, name: "foo-bar" },
+				{ id: 23458, name: "archived-aardvark", archived: true },
 			] }
 		})
 	},
