@@ -1,5 +1,5 @@
 const assert = require("assert");
-const repositoryStore = require("./repositories").instance;
+const repositories = require("./repositories");
 
 class InitialisationError extends Error {
 	constructor(message, meta) {
@@ -50,24 +50,26 @@ module.exports = async app => {
 	 * Tako should be a private (also know as internal) GitHub App, installed on the same account it is administered by.
 	 *
 	 * @see https://developer.github.com/apps/managing-github-apps/making-a-github-app-public-or-private/#private-installation-flow
-	 * @see https://octokit.github.io/rest.js/#api-Apps-getInstallations
+	 * @see https://octokit.github.io/rest.js/#api-Apps-listInstallations
 	 */
-	const installations = await octokit.apps.getInstallations().catch(err => {
-		throw new InitialisationError("Failed to get the installations", { err });
+	const installations = await octokit.apps.listInstallations().catch(err => {
+		throw new InitialisationError("Failed to get the installations", {
+			err
+		});
 	});
 
 	logger.debug("Found the installations", installations.data.map(i => i.id));
 
 	assert(
 		Array.isArray(installations.data) && installations.data.length === 1,
-		"Tako should be an internal GitHub App, to configure this see https://developer.github.com/apps/managing-github-apps/making-a-github-app-public-or-private/#private-installation-flow."
+		"Tako should be an internal GitHub App. To configure this see https://developer.github.com/apps/managing-github-apps/making-a-github-app-public-or-private/#private-installation-flow."
 	);
 
 	// @see https://developer.github.com/v3/apps/#response-2
 	const installationAccount = installations.data[0].account.login;
 
 	// https://developer.github.com/v3/apps/#response
-	const administratorAccount = (await octokit.apps.get()).data.owner.login;
+	const administratorAccount = (await octokit.apps.getAuthenticated()).data.owner.login;
 
 	logger.debug("Comparing installation account to App owner", {
 		installation: installationAccount,
@@ -93,31 +95,24 @@ module.exports = async app => {
 	 */
 	const installation = await app.auth(installationId).catch(err => {
 		throw new InitialisationError(
-			`Failed to authenticate as installation ${installationId}`,
-			{ err }
+			`Failed to authenticate as installation ${installationId}`, {
+				err
+			}
 		);
 	});
 
 	logger.debug(`Authenticated as installation ${installationId}`);
 
 	try {
-		// Get the repositories this app is installed on.
-		// @see https://octokit.github.io/rest.js/#api-Apps-getInstallationRepositories
-		const repositories = await installation.paginate(
-			installation.apps.getInstallationRepositories({ per_page: 100 }),
-			res => res.data.repositories // Pull out only the list of repositories from each response.
-		);
-
-		// Save each repository to our global map of repositories.
-		repositories.forEach(({ id, name }) => {
-			repositoryStore.set(id, { id, name });
-		});
-	} catch (err) {
+		const repositoryCount = await repositories.refresh(installation);
+		logger.info(`Refreshed the repository store. Total: ${repositoryCount}`);
+		return installation;
+	}
+	catch (err) {
 		throw new InitialisationError(
-			"Failed to fetch repository information with apps.getInstallationRepositories",
-			{ err }
+			`Failed to refresh the repository store from installation ${installationId}`, {
+				err
+			}
 		);
 	}
-
-	logger.info(`Loaded ${repositoryStore.size} repositories`);
 };
