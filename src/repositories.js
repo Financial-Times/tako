@@ -23,7 +23,7 @@ async function refresh(octokit) {
 		// Refresh the Repository Store — filtering out archived repositories.
 		repositoryStore = repositories
 			.filter(({ archived }) => !archived)
-			.map(({id, name, topics}) => ({id, name, topics}));
+			.map(({id, name, topics}) => ({id, name, topics: topics || []}));
 
 		return repositoryStore.length;
 	}
