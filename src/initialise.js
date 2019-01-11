@@ -69,7 +69,8 @@ module.exports = async app => {
 	const installationAccount = installations.data[0].account.login;
 
 	// https://developer.github.com/v3/apps/#response
-	const administratorAccount = (await octokit.apps.getAuthenticated()).data.owner.login;
+	const administratorAccount = (await octokit.apps.getAuthenticated()).data
+		.owner.login;
 
 	logger.debug("Comparing installation account to App owner", {
 		installation: installationAccount,
@@ -95,7 +96,8 @@ module.exports = async app => {
 	 */
 	const installation = await app.auth(installationId).catch(err => {
 		throw new InitialisationError(
-			`Failed to authenticate as installation ${installationId}`, {
+			`Failed to authenticate as installation ${installationId}`,
+			{
 				err
 			}
 		);
@@ -107,10 +109,10 @@ module.exports = async app => {
 		const repositoryCount = await repositories.refresh(installation);
 		logger.info(`Refreshed the repository store. Total: ${repositoryCount}`);
 		return installation;
-	}
-	catch (err) {
+	} catch (err) {
 		throw new InitialisationError(
-			`Failed to refresh the repository store from installation ${installationId}`, {
+			`Failed to refresh the repository store from installation ${installationId}`,
+			{
 				err
 			}
 		);
