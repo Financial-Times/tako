@@ -8,9 +8,8 @@ jest.spyOn(repositories, "refresh");
 // @see https://jestjs.io/docs/en/manual-mocks#examples
 jest.mock("../src/routes");
 
-const app = new Application();
-
 // Initialize the Probot application
+const app = new Application();
 app.load(tako);
 
 // Pass the mocked out GitHub API into our Probot application instance.

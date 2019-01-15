@@ -1,68 +1,36 @@
+// DO NOT MOVE: Set the bearer token for the test.
+process.env.BEARER_TOKEN = "correct-bearer-token";
+
 const { Application } = require("probot");
 const request = require("supertest");
 const express = require("express");
-
-// Hardcode the bearer token for the test.
-process.env.BEARER_TOKEN = "hunter2";
-
-// Requiring our app implementation.
 const routes = require("../src/routes");
 
+// Initialize the Probot application
+const app = new Application();
+
+// Set up an ExpressJS server and route it with the Probot app's router.
+const server = express();
+server.use(app.router);
+
 describe("routes.js", () => {
-	let app;
-	let server;
-	let github;
-
 	beforeEach(async () => {
-		app = new Application();
-		server = express();
-
-		// Mock out call to the GitHub API for the topic search.
-		github = {
-			apps: {
-				getAuthenticated: jest.fn().mockResolvedValue({
-					data: { owner: { login: "umbrella-corp" } }
-				})
-			},
-			// Assuming we're not going to paginate in these tests.
-			paginate: async (octokitCall, process) => {
-				return Promise.resolve(process(await octokitCall));
-			}
-		};
-
-		// Passes the mocked out GitHub API into our app instance.
-		app.auth = () => Promise.resolve(github);
-
-		// Register our routes with the empty application.
 		await routes(app);
-
-		// Setup an express object that we can test.
-		server.use(app.router);
 	});
 
-	test("reject unauthorised request when a bearer token is loaded", async () => {
+	test("rejects an incorrect Bearer token", async () => {
 		await request(server)
 			.get("/tako/repositories")
 			.set("Accept", "application/json")
-			.expect(401);
-
-		await request(server)
-			.get("/tako/repositories?topic=express")
-			.set("Accept", "application/json")
+			.set("Authorization", "Bearer incorrect-bearer-token")
 			.expect(401);
 	});
 
-	test("accepts authorised request when a bearer token is loaded", async () => {
+	test("accepts a correct Bearer token", async () => {
 		await request(server)
 			.get("/tako/repositories")
 			.set("Accept", "application/json")
-			.set("Authorization", "Bearer hunter2")
-			.expect(200);
-
-		await request(server)
-			.get("/tako/repositories?topic=express")
-			.set("Accept", "application/json")
-			.set("Authorization", "Bearer hunter2")
+			.set("Authorization", "Bearer correct-bearer-token")
 			.expect(200);
 	});
 
@@ -70,13 +38,7 @@ describe("routes.js", () => {
 		await request(server)
 			.get("/tako/repositories")
 			.set("Accept", "application/json")
-			.set("Authorization", "Bearer hunter2")
-			.expect("Cache-Control", "max-age=0, no-cache");
-
-		await request(server)
-			.get("/tako/repositories?topic=express")
-			.set("Accept", "application/json")
-			.set("Authorization", "Bearer hunter2")
+			.set("Authorization", "Bearer correct-bearer-token")
 			.expect("Cache-Control", "max-age=0, no-cache");
 	});
 
@@ -84,16 +46,16 @@ describe("routes.js", () => {
 		await request(server)
 			.get("/tako/repositories")
 			.set("Accept", "application/json")
-			.set("Authorization", "Bearer hunter2")
+			.set("Authorization", "Bearer correct-bearer-token")
 			.expect("Content-Type", "application/json; charset=utf-8")
 			.expect(200);
 	});
 
-	test("/tako/repositories?topic=express responds ok", async () => {
+	test("/tako/repositories?topic=foo responds ok", async () => {
 		await request(server)
-			.get("/tako/repositories?topic=express")
+			.get("/tako/repositories?topic=foo")
 			.set("Accept", "application/json")
-			.set("Authorization", "Bearer hunter2")
+			.set("Authorization", "Bearer correct-bearer-token")
 			.expect("Content-Type", "application/json; charset=utf-8")
 			.expect(200);
 	});
