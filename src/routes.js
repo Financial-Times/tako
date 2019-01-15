@@ -60,7 +60,7 @@ const router = async app => {
 		router.use(auth);
 		logger.debug("Registered the auth middleware");
 	} else {
-		logger.debug("Skipped registered the auth middleware");
+		logger.debug("Skipped registration of the auth middleware");
 	}
 
 	/**
@@ -85,7 +85,7 @@ const router = async app => {
 		res.send({ repositories: repositoryList });
 	});
 
-	logger.info("Registered the /tako router");
+	logger.debug("Registered the /tako router");
 };
 
 module.exports = router;
