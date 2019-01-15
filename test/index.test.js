@@ -1,26 +1,24 @@
 const { Application } = require("probot");
+const tako = require("../src/index");
 const githubMock = require("./github-mock.js");
 const repositories = require("../src/repositories");
 jest.spyOn(repositories, "refresh");
-
-// Requiring our app implementation.
-const subject = require("../src/index");
 
 // We must mock the require calls that `index.js` makes here, not under `describe`.
 // @see https://jestjs.io/docs/en/manual-mocks#examples
 jest.mock("../src/routes");
 
+const app = new Application();
+
+// Initialize the Probot application
+app.load(tako);
+
+// Pass the mocked out GitHub API into our Probot application instance.
+app.auth = jest.fn().mockResolvedValue(githubMock);
+
 describe("index.js", () => {
-	const app = new Application();
-
-	// Initialize the app based on the code from index.js
-	app.load(subject);
-
-	// Passes the mocked out GitHub API into out app instance.
-	app.auth = jest.fn().mockResolvedValue(githubMock);
-
 	beforeEach(() => {
-		repositories.refresh.mockClear();
+		jest.clearAllMocks();
 	});
 
 	test("installation_repositories.added", async () => {
