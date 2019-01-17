@@ -1,38 +1,33 @@
 const routes = require("./routes");
-const initialise = require("./initialise");
 const repositories = require("./repositories");
 
 /**
  * @param {import('probot').Application} app - Probot's Application class.
  */
 module.exports = async app => {
-	// Ensure that we crash if there's any error loading our API routes.
-	try {
-		await routes(app);
-	} catch (err) {
-		app.log.fatal("Failed to load API routes", err);
-		process.exit(1);
-	}
+	await routes(app);
 
-	// Ensure that we crash Probot if we are unable to initialise.
-	const installation = await initialise(app).catch(err => {
-		app.log.fatal("Failed to initialise", err);
-		process.exit(1);
-	});
-
-	async function refresh(context) {
-		const repositoryCount = await repositories.refresh(installation);
-		app.log.info(
-			`Refreshed the repository store. Total: ${repositoryCount}. Action: ${context
-				.payload.action || "Unknown"}`
-		);
+	const refresh = async github => {
+		await repositories.refresh(github);
+		app.log.debug("Refreshed the repositoryStore. Length:", repositories.list().length);
 	}
 
 	/**
 	 * On appropriate events, refresh the whole list of Tako repositories.
 	 * @see https://developer.github.com/webhooks/#events for a list of all GitHub webhook events.
 	 */
-	app.on("installation_repositories.added", refresh);
-	app.on("installation_repositories.removed", refresh);
-	// TODO: Handle appropriate "archived" events
+	app.on([
+		"installation_repositories",
+	], ({ github }) => refresh(github));
+
+	/**
+	 * app.auth()
+	 * @property process.env.INSTALLATION_ID - ID of the installation, which can be extracted from:
+	 *  a) `context.payload.installation.id` or
+	 *  b) the URL https://github.com/organizations/[org]/settings/installations/[installation_id]
+	 * @returns An authenticated GitHub API client
+	 * @see https://github.com/probot/probot/blob/master/src/application.ts#L180
+	 */
+	const github = await app.auth(process.env.INSTALLATION_ID);
+	refresh(github);
 };

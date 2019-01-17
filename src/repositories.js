@@ -6,35 +6,24 @@ let repositoryStore = new Array();
 /**
  * Refresh the Repository Store with data fetched from the Tako GitHub App installation
  * @see https://octokit.github.io/rest.js/#api-Apps-listRepos
- * @param {import('probot').GitHubAPI} installation - The Tako GitHub App installation
+ * @param {import('probot').GitHubAPI} github - An authenticated octokit instance
  */
-async function refresh(octokit) {
-	try {
-		const repositories = await octokit.paginate(
-			octokit.apps.listRepos({
-				per_page: 100,
-				headers: {
-					accept:
-						"application/vnd.github.machine-man-preview+json,application/vnd.github.mercy-preview+json"
-				}
-			}),
-			res => res.data.repositories // Pull out only the list of repositories from each response.
-		);
-
-		// Refresh the Repository Store — filtering out archived repositories.
-		repositoryStore = repositories
-			.filter(({ archived }) => !archived)
-			.map(({ id, name, topics }) => ({ id, name, topics: topics || [] }));
-
-		return repositoryStore.length;
-	} catch (err) {
-		throw new Error(
-			"Failed to fetch repository information with apps.listRepos",
-			{
-				err
+async function refresh(github) {
+	const repositories = await github.paginate(
+		github.apps.listRepos({
+			per_page: 100,
+			headers: {
+				accept:
+					"application/vnd.github.machine-man-preview+json,application/vnd.github.mercy-preview+json"
 			}
-		);
-	}
+		}),
+		res => res.data.repositories // Pull out only the list of repositories from each response.
+	);
+
+	// Refresh the Repository Store — filtering out archived repositories.
+	repositoryStore = repositories || []
+		.filter(({ archived }) => !archived)
+		.map(({ name, topics }) => ({ name, topics: topics || [] }));
 }
 
 module.exports = {

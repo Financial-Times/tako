@@ -1,45 +1,51 @@
-const { Application } = require("probot");
-const githubMock = require("./github-mock.js");
+process.env.INSTALLATION_ID = 123456;
+
+const nock = require("nock")
+const tako = require("../src/index")
+const { Probot } = require("probot")
+
 const repositories = require("../src/repositories");
-jest.spyOn(repositories, "refresh");
+jest.spyOn(repositories, "refresh")
 
-// Requiring our app implementation.
-const subject = require("../src/index");
+nock.disableNetConnect()
 
-// We must mock the require calls that `index.js` makes here, not under `describe`.
-// @see https://jestjs.io/docs/en/manual-mocks#examples
-jest.mock("../src/routes");
+nock("https://api.github.com")
+	.persist()
+	.post(`/app/installations/${process.env.INSTALLATION_ID}/access_tokens`)
+	.reply(200, { token: "token" })
+	.get("/installation/repositories?per_page=100")
+	.reply(200);
 
 describe("index.js", () => {
-	const app = new Application();
+	test("refresh the repository list on startup", (next) => {
+		const probot = new Probot({})
+		const app = probot.load(tako)
+		app.app = () => "token"
 
-	// Initialize the app based on the code from index.js
-	app.load(subject);
-
-	// Passes the mocked out GitHub API into out app instance.
-	app.auth = jest.fn().mockResolvedValue(githubMock);
-
-	beforeEach(() => {
-		repositories.refresh.mockClear();
+		// Wait for Probot to finish loading
+		setTimeout(() => {
+			expect(repositories.refresh).toHaveBeenCalledTimes(1)
+			next();
+		}, 2000);
 	});
 
-	test("installation_repositories.added", async () => {
-		await app.receive({
-			name: "installation_repositories",
-			payload: {
-				action: "added"
-			}
-		});
-		expect(repositories.refresh).toHaveBeenCalledTimes(1);
+	test("respond appropriately when receiving GitHub webhook events", (next) => {
+		const probot = new Probot({})
+		const app = probot.load(tako)
+		app.app = () => "token"
+
+		// Note: repositories.refresh is called once when probot starts
+		// and a second time on probot.receive()
+		setTimeout(async() => {
+			await probot.receive({ name: "test", payload: { action: "test" } });
+			expect(repositories.refresh).toHaveBeenCalledTimes(2);
+			next();
+		}, 2000);
 	});
 
-	test("installation_repositories.removed", async () => {
-		await app.receive({
-			name: "installation_repositories",
-			payload: {
-				action: "removed"
-			}
-		});
-		expect(repositories.refresh).toHaveBeenCalledTimes(1);
-	});
-});
+	describe.skip("Exit meaningfully on startup:", () => {
+		test("If unable to load API routes", async () => {});
+		test("If unable to initialise Probot", async () => {});
+	})
+})
+

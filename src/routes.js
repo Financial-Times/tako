@@ -48,6 +48,13 @@ const auth = (req, res, next) => {
 const router = async app => {
 	const logger = app.log.child({ name: "api" });
 
+	/**
+	 * An endpoint to check that Tako is fully loaded.
+	 *
+	 * Note: While Tako is starting up, /__gtg responds with a 404 status code.
+	 */
+	app.router.get("/__gtg", (req, res) => res.send("OK"));
+
 	// Get an express router from the Probot application instance
 	const router = app.route("/tako");
 
@@ -64,19 +71,11 @@ const router = async app => {
 	}
 
 	/**
-	 * An endpoint to check that Tako is fully loaded.
-	 *
-	 * While Tako is starting up, this endpoint will respond with a 404 status code.
-	 */
-	app.router.get("/__gtg", (req, res) => res.send("OK"));
-
-	/**
 	 * Get yourself a list of repositories.
 	 */
 	router.get("/repositories", async (req, res) => {
-		let repositoryList = repositories
-			.list()
-			.map(({ name, topics }) => ({ name, topics }));
+		let repositoryList = repositories.list()
+
 		if (req.query.topic) {
 			repositoryList = repositoryList.filter(repository => {
 				return repository.topics.includes(req.query.topic);
