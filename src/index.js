@@ -18,7 +18,8 @@ module.exports = async app => {
 	 * @see https://developer.github.com/v3/activity/events/types/#installationrepositoriesevent
 	 */
 	app.on([
-		"repository",
+		"repository.archived",
+		"repository.unarchived",
 		"installation_repositories",
 	], ({ github }) => refresh(github));
 
