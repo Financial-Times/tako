@@ -97,18 +97,4 @@ describe("routes.js", () => {
 			.expect("Content-Type", "application/json; charset=utf-8")
 			.expect(200);
 	});
-
-	test("/tako/repositories?topic=fake-github-auth-erroring responds with an error", async () => {
-		app.auth = jest.fn().mockRejectedValue();
-
-		try {
-			await request(server)
-				.get("/tako/repositories?topic=this-will-break")
-				.set("Accept", "application/json")
-				.set("Authorization", "Bearer hunter2")
-				.expect(500);
-		} catch (err) {
-			// We're looking for the 500 status code.
-		}
-	});
 });

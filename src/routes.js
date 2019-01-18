@@ -67,7 +67,7 @@ const router = async app => {
 		router.use(auth);
 		logger.debug("Registered the auth middleware");
 	} else {
-		logger.debug("Skipped registered the auth middleware");
+		logger.debug("Skipped registering the auth middleware");
 	}
 
 	/**

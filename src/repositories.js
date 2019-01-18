@@ -20,8 +20,9 @@ async function refresh(github) {
 		res => res.data.repositories // Pull out only the list of repositories from each response.
 	);
 
-	// Refresh the Repository Store — filtering out archived repositories.
-	repositoryStore = repositories || []
+	// Refresh the Repository Store — filtering out undefined and archived repositories.
+	repositoryStore = repositories
+		.filter(row => !!row)
 		.filter(({ archived }) => !archived)
 		.map(({ name, topics }) => ({ name, topics: topics || [] }));
 }

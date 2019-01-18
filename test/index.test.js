@@ -43,9 +43,9 @@ describe("index.js", () => {
 		}, 2000);
 	});
 
-	describe.skip("Exit meaningfully on startup:", () => {
-		test("If unable to load API routes", async () => {});
-		test("If unable to initialise Probot", async () => {});
-	})
+	// Note: Probot doesn't exit, even if you throw an error and call process.extit(1).
+	test.skip("Exit meaningfully on startup if unable to load API routes", () => {});
+
+	nock.enableNetConnect();
 })
 
