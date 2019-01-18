@@ -17,7 +17,7 @@ nock("https://api.github.com")
 	.reply(200)
 
 describe("index.js", () => {
-	test("refresh the repository list on startup", (next) => {
+	test("initialise the repository list on startup", (next) => {
 		const probot = new Probot({})
 		const app = probot.load(tako)
 		app.app = () => "token"
