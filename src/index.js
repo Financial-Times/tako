@@ -29,7 +29,7 @@ module.exports = async app => {
 		})
 	}
 
-	// Refresh the repository list on startup
+	// Initialise the repository list on startup
 	refresh()
 
 	/**
