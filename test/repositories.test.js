@@ -9,6 +9,8 @@ nock.disableNetConnect()
 
 nock("https://api.github.com")
 	.persist()
+	.get("/app/installations")
+	.reply(200, [ { id: "123456" } ])
 	.post(`/app/installations/${process.env.INSTALLATION_ID}/access_tokens`)
 	.reply(200, { token: "token" });
 

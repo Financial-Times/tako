@@ -7,10 +7,30 @@ const repositories = require("./repositories");
 module.exports = async app => {
 	await routes(app);
 
-	const refresh = async github => {
-		await repositories.refresh(github);
-		app.log.debug("Refreshed the repositoryStore. Length:", repositories.list().length);
+	/**
+	 * Refresh the Repository Store for all installation instances.
+	 */
+	const refresh = async () => {
+
+		// Reset the repository store
+		repositories.clear()
+
+		// Authenticate the Tako GitHub application and get all of its installations
+		const githubApp = await app.auth()
+		const installations = await githubApp.apps.listInstallations()
+
+		// For each installation, update the repository store
+		installations.data.forEach( async ({ id }) => {
+
+			// @property {import('probot').GitHubAPI} github - An authenticated octokit instance
+			const github = await app.auth(id)
+			await repositories.update(github)
+			app.log.debug(`Refreshed the repositoryStore for installation #${id}. Length: ${repositories.list().length}`)
+		})
 	}
+
+	// Refresh the repository list on startup
+	refresh()
 
 	/**
 	 * On appropriate events, refresh the whole list of Tako repositories.
@@ -21,16 +41,5 @@ module.exports = async app => {
 		"repository.archived",
 		"repository.unarchived",
 		"installation_repositories",
-	], ({ github }) => refresh(github));
-
-	/**
-	 * app.auth()
-	 * @property process.env.INSTALLATION_ID - ID of the installation, which can be extracted from:
-	 *  a) `context.payload.installation.id` or
-	 *  b) the URL https://github.com/organizations/[org]/settings/installations/[installation_id]
-	 * @returns An authenticated GitHub API client
-	 * @see https://github.com/probot/probot/blob/master/src/application.ts#L180
-	 */
-	const github = await app.auth(process.env.INSTALLATION_ID);
-	refresh(github);
+	], refresh);
 };
