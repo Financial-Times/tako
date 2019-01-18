@@ -14,9 +14,11 @@ module.exports = async app => {
 
 	/**
 	 * On appropriate events, refresh the whole list of Tako repositories.
-	 * @see https://developer.github.com/webhooks/#events for a list of all GitHub webhook events.
+	 * @see https://developer.github.com/v3/activity/events/types/#repositoryevent
+	 * @see https://developer.github.com/v3/activity/events/types/#installationrepositoriesevent
 	 */
 	app.on([
+		"repository",
 		"installation_repositories",
 	], ({ github }) => refresh(github));
 
