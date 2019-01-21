@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`repositories.js repositories.list property returns an Array of repositories 1`] = `
+Array [
+  Object {
+    "full_name": "financial-times-sandbox/Bitter-Canal",
+    "name": "Bitter-Canal",
+    "owner": "financial-times-sandbox",
+    "topics": Array [],
+    "url": "https://github.com/financial-times-sandbox/Bitter-Canal",
+  },
+  Object {
+    "full_name": "financial-times-sandbox/Black-Pottery",
+    "name": "Black-Pottery",
+    "owner": "financial-times-sandbox",
+    "topics": Array [],
+    "url": "https://github.com/financial-times-sandbox/Black-Pottery",
+  },
+  Object {
+    "full_name": "financial-times-sandbox/Deserted-Jazz",
+    "name": "Deserted-Jazz",
+    "owner": "financial-times-sandbox",
+    "topics": Array [
+      "application",
+      "music",
+    ],
+    "url": "https://github.com/financial-times-sandbox/Deserted-Jazz",
+  },
+  Object {
+    "full_name": "financial-times-sandbox/Dreadful-Antique",
+    "name": "Dreadful-Antique",
+    "owner": "financial-times-sandbox",
+    "topics": Array [
+      "component",
+    ],
+    "url": "https://github.com/financial-times-sandbox/Dreadful-Antique",
+  },
+  Object {
+    "full_name": "financial-times-sandbox/Eastern-Street",
+    "name": "Eastern-Street",
+    "owner": "financial-times-sandbox",
+    "topics": Array [],
+    "url": "https://github.com/financial-times-sandbox/Eastern-Street",
+  },
+  Object {
+    "full_name": "financial-times-sandbox/Essential-Xylophone",
+    "name": "Essential-Xylophone",
+    "owner": "financial-times-sandbox",
+    "topics": Array [],
+    "url": "https://github.com/financial-times-sandbox/Essential-Xylophone",
+  },
+  Object {
+    "full_name": "financial-times-sandbox/Massive-Moose",
+    "name": "Massive-Moose",
+    "owner": "financial-times-sandbox",
+    "topics": Array [],
+    "url": "https://github.com/financial-times-sandbox/Massive-Moose",
+  },
+]
+`;
