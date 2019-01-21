@@ -42,25 +42,25 @@ describe("routes.js", () => {
 
 	test("reject unauthorised request when a bearer token is loaded", async () => {
 		await request(server)
-			.get("/repositories")
+			.get("/tako/repositories")
 			.set("Accept", "application/json")
 			.expect(401);
 
 		await request(server)
-			.get("/repositories?topic=express")
+			.get("/tako/repositories?topic=application")
 			.set("Accept", "application/json")
 			.expect(401);
 	});
 
 	test("accepts authorised request when a bearer token is loaded", async () => {
 		await request(server)
-			.get("/repositories")
+			.get("/tako/repositories")
 			.set("Accept", "application/json")
 			.set("Authorization", "Bearer hunter2")
 			.expect(200);
 
 		await request(server)
-			.get("/repositories?topic=express")
+			.get("/tako/repositories?topic=application")
 			.set("Accept", "application/json")
 			.set("Authorization", "Bearer hunter2")
 			.expect(200);
@@ -68,30 +68,30 @@ describe("routes.js", () => {
 
 	test("noCache sets a cache-control header with a value of max-age=0", async () => {
 		await request(server)
-			.get("/repositories")
+			.get("/tako/repositories")
 			.set("Accept", "application/json")
 			.set("Authorization", "Bearer hunter2")
 			.expect("Cache-Control", "max-age=0, no-cache");
 
 		await request(server)
-			.get("/repositories?topic=express")
+			.get("/tako/repositories?topic=application")
 			.set("Accept", "application/json")
 			.set("Authorization", "Bearer hunter2")
 			.expect("Cache-Control", "max-age=0, no-cache");
 	});
 
-	test("/repositories reponds ok", async () => {
+	test("/tako/repositories reponds ok", async () => {
 		await request(server)
-			.get("/repositories")
+			.get("/tako/repositories")
 			.set("Accept", "application/json")
 			.set("Authorization", "Bearer hunter2")
 			.expect("Content-Type", "application/json; charset=utf-8")
 			.expect(200);
 	});
 
-	test("/repositories?topic=express responds ok", async () => {
+	test("/tako/repositories?topic=application responds ok", async () => {
 		await request(server)
-			.get("/repositories?topic=express")
+			.get("/tako/repositories?topic=application")
 			.set("Accept", "application/json")
 			.set("Authorization", "Bearer hunter2")
 			.expect("Content-Type", "application/json; charset=utf-8")

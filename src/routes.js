@@ -49,7 +49,7 @@ const router = async app => {
 	const logger = app.log.child({ name: "api" });
 
 	// Get an express router from the Probot application instance
-	const router = app.route("/");
+	const router = app.route("/tako");
 
 	// Note: While Tako is starting up, /__gtg responds with a 404 status code.
 	router.get("/__gtg", (req, res) => res.send("OK"));

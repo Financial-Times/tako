@@ -23,8 +23,20 @@ const update = async (github) => {
 	repositories
 		.filter(repository => !!repository)
 		.filter(({ archived }) => !archived)
-		.map(({ full_name, name, topics }) => {
-			repositoryStore.set(full_name, { name, topics: topics || [] })
+		.map(({
+			full_name,
+			name,
+			html_url,
+			owner,
+			topics
+		}) => {
+			// Use `full_name` as a unique key.
+			repositoryStore.set(full_name, {
+				name,
+				url: html_url,
+				owner: owner.login,
+				topics: topics || []
+			})
 		})
 }
 

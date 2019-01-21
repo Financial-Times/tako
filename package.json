@@ -39,6 +39,9 @@
   "jest": {
     "testEnvironment": "node",
     "collectCoverage": true,
+    "collectCoverageFrom": [
+      "**/src/**"
+    ],
     "coverageDirectory": "test-results/coverage/",
     "reporters": [
       "default",
