@@ -5,6 +5,8 @@ const repositories = require("./repositories");
  * @param {import('probot').Application} app - Probot's Application class.
  */
 module.exports = async app => {
+
+	// Register the routes with Probot using an Express router.
 	await routes(app);
 
 	/**

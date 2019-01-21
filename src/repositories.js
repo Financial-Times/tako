@@ -21,7 +21,7 @@ const update = async (github) => {
 
 	// Update the Repository Store — filtering out undefined and archived repositories.
 	repositories
-		.filter(row => !!row)
+		.filter(repository => !!repository)
 		.filter(({ archived }) => !archived)
 		.map(({ full_name, name, topics }) => {
 			repositoryStore.set(full_name, { name, topics: topics || [] })
@@ -33,7 +33,7 @@ const update = async (github) => {
  * @returns Array - List of all repositories in the store
  */
 const list = () => {
-	return Array.from(repositoryStore).map(row => ({ full_name: row[0], ...row[1] }))
+	return Array.from(repositoryStore).map(repository => ({ full_name: repository[0], ...repository[1] }))
 }
 
 module.exports = {
