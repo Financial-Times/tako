@@ -51,6 +51,9 @@ const router = async app => {
 	// Get an express router from the Probot application instance
 	const router = app.route("/tako");
 
+	// Note: While Tako is starting up, /__gtg responds with a 404 status code.
+	router.get("/__gtg", (req, res) => res.send("OK"));
+
 	// Responses could frequently change, so send a sensible cache-control header.
 	router.use(noCache);
 
@@ -60,23 +63,16 @@ const router = async app => {
 		router.use(auth);
 		logger.debug("Registered the auth middleware");
 	} else {
-		logger.debug("Skipped registered the auth middleware");
+		logger.debug("Skipped registering the auth middleware");
 	}
 
 	/**
-	 * An endpoint to check that Tako is fully loaded.
-	 *
-	 * While Tako is starting up, this endpoint will respond with a 404 status code.
-	 */
-	app.router.get("/__gtg", (req, res) => res.send("OK"));
-
-	/**
-	 * Get yourself a list of repositories.
+	 * Get a list of repositories.
+	 * @returns Object with "repositories" property, which is an array.
 	 */
 	router.get("/repositories", async (req, res) => {
-		let repositoryList = repositories
-			.list()
-			.map(({ name, topics }) => ({ name, topics }));
+		let repositoryList = repositories.list();
+
 		if (req.query.topic) {
 			repositoryList = repositoryList.filter(repository => {
 				return repository.topics.includes(req.query.topic);
@@ -85,7 +81,7 @@ const router = async app => {
 		res.send({ repositories: repositoryList });
 	});
 
-	logger.info("Registered the /tako router");
+	logger.info("Registered the router");
 };
 
 module.exports = router;

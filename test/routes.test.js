@@ -47,7 +47,7 @@ describe("routes.js", () => {
 			.expect(401);
 
 		await request(server)
-			.get("/tako/repositories?topic=express")
+			.get("/tako/repositories?topic=application")
 			.set("Accept", "application/json")
 			.expect(401);
 	});
@@ -60,7 +60,7 @@ describe("routes.js", () => {
 			.expect(200);
 
 		await request(server)
-			.get("/tako/repositories?topic=express")
+			.get("/tako/repositories?topic=application")
 			.set("Accept", "application/json")
 			.set("Authorization", "Bearer hunter2")
 			.expect(200);
@@ -74,7 +74,7 @@ describe("routes.js", () => {
 			.expect("Cache-Control", "max-age=0, no-cache");
 
 		await request(server)
-			.get("/tako/repositories?topic=express")
+			.get("/tako/repositories?topic=application")
 			.set("Accept", "application/json")
 			.set("Authorization", "Bearer hunter2")
 			.expect("Cache-Control", "max-age=0, no-cache");
@@ -89,26 +89,12 @@ describe("routes.js", () => {
 			.expect(200);
 	});
 
-	test("/tako/repositories?topic=express responds ok", async () => {
+	test("/tako/repositories?topic=application responds ok", async () => {
 		await request(server)
-			.get("/tako/repositories?topic=express")
+			.get("/tako/repositories?topic=application")
 			.set("Accept", "application/json")
 			.set("Authorization", "Bearer hunter2")
 			.expect("Content-Type", "application/json; charset=utf-8")
 			.expect(200);
-	});
-
-	test("/tako/repositories?topic=fake-github-auth-erroring responds with an error", async () => {
-		app.auth = jest.fn().mockRejectedValue();
-
-		try {
-			await request(server)
-				.get("/tako/repositories?topic=this-will-break")
-				.set("Accept", "application/json")
-				.set("Authorization", "Bearer hunter2")
-				.expect(500);
-		} catch (err) {
-			// We're looking for the 500 status code.
-		}
 	});
 });
