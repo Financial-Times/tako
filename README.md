@@ -4,7 +4,7 @@ A GitHub App that provides an API listing the repositories it is installed on.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-FT.com shares the `Financial-Times` GitHub organisation with many other teams, containing over two thousand repositories.
+FT.com shares the `Financial-Times` GitHub organisation with many other teams, containing over three thousand repositories.
 
 We use Tako to make a canonical list of the FT.com team's two hundred or so repositories. This list is available via an API for tooling and automation.
 
@@ -16,10 +16,13 @@ Get a list of all the repositories.
 {
   "repositories": [
     {
-      "name": "foo-bar"
-    },
-    {
-      "name": "fizz-buzz"
+      "full_name": "acme/foo-bar",
+      "name": "foo-bar",
+      "url": "https://github.com/acme/foo-bar",
+      "owner": "acme",
+      "topics": [
+        "example"
+      ]
     }
   ]
 }
@@ -33,7 +36,13 @@ Get a list of repositories, filtered by a [topic](https://help.github.com/articl
 {
   "repositories": [
     {
-      "name": "foo-bar"
+      "full_name": "acme/foo-bar",
+      "name": "foo-bar",
+      "url": "https://github.com/acme/foo-bar",
+      "owner": "acme",
+      "topics": [
+        "example"
+      ]
     }
   ]
 }
