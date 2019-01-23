@@ -1,6 +1,8 @@
 # 🐙 Tako
 
-A GitHub App that provides an API listing the repositories it is installed on.
+A GitHub App that provides an API listing the GitHub repositories it is installed on.
+
+"Tako" is ["Octopus" translated to Japanese.](https://translate.google.com/#en/ja/Octopus)
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
