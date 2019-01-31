@@ -18,9 +18,7 @@ Get a list of all the repositories.
 {
   "repositories": [
     {
-      "full_name": "acme/foo-bar",
       "name": "foo-bar",
-      "url": "https://github.com/acme/foo-bar",
       "owner": "acme",
       "topics": [
         "example"
@@ -38,9 +36,7 @@ Get a list of repositories, filtered by a [topic](https://help.github.com/articl
 {
   "repositories": [
     {
-      "full_name": "acme/foo-bar",
       "name": "foo-bar",
-      "url": "https://github.com/acme/foo-bar",
       "owner": "acme",
       "topics": [
         "example"
