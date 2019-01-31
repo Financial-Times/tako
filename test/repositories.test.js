@@ -38,4 +38,6 @@ describe("repositories.js", () => {
 	test("repositories.list property returns an Array of repositories", () => {
 		expect(repositories.list()).toMatchSnapshot();
 	});
+
+	nock.enableNetConnect()
 });

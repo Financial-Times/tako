@@ -26,14 +26,12 @@ const update = async (github) => {
 		.map(({
 			full_name,
 			name,
-			html_url,
 			owner,
 			topics
 		}) => {
 			// Use `full_name` as a unique key.
 			repositoryStore.set(full_name, {
 				name,
-				url: html_url,
 				owner: owner.login,
 				topics: topics || []
 			})
@@ -45,7 +43,7 @@ const update = async (github) => {
  * @returns Array - List of all repositories in the store
  */
 const list = () => {
-	return Array.from(repositoryStore).map(repository => ({ full_name: repository[0], ...repository[1] }))
+	return Array.from(repositoryStore).map(repository => ({ ...repository[1] }))
 }
 
 module.exports = {
