@@ -10,7 +10,7 @@ const repositoryStore = new Map();
  */
 const update = async (github) => {
 	const repositories = await github.paginate(
-		github.apps.listRepos({
+		github.apps.listRepos.endpoint.merge({
 			per_page: 100,
 			headers: {
 				accept: "application/vnd.github.machine-man-preview+json,application/vnd.github.mercy-preview+json"
