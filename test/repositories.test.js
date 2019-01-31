@@ -24,7 +24,10 @@ describe("repositories.js", () => {
 
 		const probot = new Probot({})
 		const app = probot.load(tako)
-		app.app = () => "token"
+		app.app = {
+			getSignedJsonWebToken: () => "token",
+			getInstallationAccessToken: () => "token"
+		}
 
 		// Wait for Probot to finish loading
 		// Note: repositories.refresh() is called once when probot starts

@@ -20,11 +20,17 @@ nock("https://api.github.com")
 	.reply(200)
 
 describe("index.js", () => {
-	test("initialise the repository list on startup", (next) => {
-		const probot = new Probot({})
+	let probot;
+	beforeEach(() => {
+		probot = new Probot({})
 		const app = probot.load(tako)
-		app.app = () => "token"
+		app.app = {
+			getSignedJsonWebToken: () => "token",
+			getInstallationAccessToken: () => "token"
+		}
+	})
 
+	test("initialise the repository list on startup", (next) => {
 		// Wait for Probot to finish loading
 		setTimeout(() => {
 			expect(repositories.clear).toHaveBeenCalledTimes(1)
@@ -34,10 +40,6 @@ describe("index.js", () => {
 	});
 
 	test("respond appropriately when receiving GitHub webhook events", (next) => {
-		const probot = new Probot({})
-		const app = probot.load(tako)
-		app.app = () => "token"
-
 		// Note: repositories.clear is called once when probot starts
 		// and a second time on probot.receive()
 		setTimeout(async() => {
