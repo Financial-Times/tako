@@ -8,43 +8,39 @@ const repositoryStore = new Map();
  * @see https://octokit.github.io/rest.js/#api-Apps-listRepos
  * @param {import('probot').GitHubAPI} github - An authenticated octokit instance
  */
-const update = async (github) => {
+const update = async github => {
 	const repositories = await github.paginate(
 		github.apps.listRepos.endpoint.merge({
 			per_page: 100,
 			headers: {
-				accept: "application/vnd.github.machine-man-preview+json,application/vnd.github.mercy-preview+json"
+				accept:
+					"application/vnd.github.machine-man-preview+json,application/vnd.github.mercy-preview+json"
 			}
 		}),
 		res => res.data.repositories // Pull out only the list of repositories from each response.
-	)
+	);
 
 	// Update the Repository Store — filtering out undefined and archived repositories.
 	repositories
 		.filter(repository => !!repository)
 		.filter(({ archived }) => !archived)
-		.map(({
-			full_name,
-			name,
-			owner,
-			topics
-		}) => {
+		.map(({ full_name, name, owner, topics }) => {
 			// Use `full_name` as a unique key.
 			repositoryStore.set(full_name, {
 				name,
 				owner: owner.login,
 				topics: topics || []
-			})
-		})
-}
+			});
+		});
+};
 
 /**
  * Flatten the repository store map into an array
  * @returns Array - List of all repositories in the store
  */
 const list = () => {
-	return Array.from(repositoryStore).map(repository => ({ ...repository[1] }))
-}
+	return Array.from(repositoryStore).map(repository => ({ ...repository[1] }));
+};
 
 module.exports = {
 	update: update,

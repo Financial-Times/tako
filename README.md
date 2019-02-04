@@ -20,9 +20,7 @@ Get a list of all the repositories.
     {
       "name": "foo-bar",
       "owner": "acme",
-      "topics": [
-        "example"
-      ]
+      "topics": ["example"]
     }
   ]
 }
@@ -38,9 +36,7 @@ Get a list of repositories, filtered by a [topic](https://help.github.com/articl
     {
       "name": "foo-bar",
       "owner": "acme",
-      "topics": [
-        "example"
-      ]
+      "topics": ["example"]
     }
   ]
 }
