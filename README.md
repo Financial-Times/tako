@@ -75,6 +75,8 @@ npm run dev
 
 You're now good to go 🎉. Check out <http://localhost:3000/tako/repositories>.
 
+GitHub also have some great [documentation on building a GitHub App](https://developer.github.com/apps/building-github-apps/).
+
 ### Formatting and Code Quality
 
 This project uses a few tools to help us with consistent formatting and code
