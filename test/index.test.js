@@ -17,7 +17,11 @@ nock("https://api.github.com")
 	.post(`/app/installations/654321/access_tokens`)
 	.reply(200, { token: "token" })
 	.get("/installation/repositories?per_page=100")
-	.reply(200);
+	.reply(200, {
+		total_count: 1,
+		repository_selection: "selected",
+		repositories: [{ id: 123456, owner: { login: "foo-bar" } }]
+	});
 
 describe("index.js", () => {
 	let probot;
