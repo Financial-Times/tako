@@ -30,7 +30,7 @@
     "supertest": "^4.0.2"
   },
   "engines": {
-    "node": "10.18.1"
+    "node": "10.21.0"
   },
   "repository": {
     "type": "git",
